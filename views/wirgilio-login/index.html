@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Wirgilio - Login</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="it" />
+
+    <meta name="Robots" content="All" />
+    <meta name="Description" content="" />
+    <meta name="Keywords" content="javascript" />
+    <meta name="Owner" content="" />
+    <meta name="Author" content="" />
+    <meta name="Copyright" content="" />
+
+    <link rel="shortcut icon" type="image/ico" href="images/ico/favicon.ico" />
+    <!--[if (gte IE 6)&(lte IE 8)]>
+    <noscript><link rel="stylesheet" href="css/fallback.css" /></noscript>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="style_login.css" />
+    <script type="text/javascript"   src="lib/jquery/dist/jquery.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="js/login_JQ.js">
+
+	</script>
+</head>
+
+<body>
+		<div id="container2"><img src="images/logo.png" width="360" height="102" alt="">
+        </div>
+        
+<div id="container">
+			<form   id="formLogin" action="" method="post">
+				<div class="login">LOGIN</div>
+				<div class="username-text">Username:</div>
+				<div class="password-text">Password:</div>
+				<div class="username-field">
+					<input type="text" name="username" id="username" class="oklogin"/>
+				</div>
+				<div class="password-field">
+					<input type="password" name="pwd" id="password" class="oklogin"/>
+				</div>
+				<input type="checkbox" name="remember-me" id="remember-me" /><label for="remember-me">Remember me</label>
+				<div class="forgot-usr-pwd">Hai dimenticato la password?</div>
+				<input type="button" name="submit" value="VAI" onclick="sottoMettiForm();"/>
+            </form>
+		</div>
+		<div id="footer">
+			Software realizzato da<a href="http://www.gesan.it" target="_blank"> Gesan s.r.l.</a>
+		</div>
+	</body>
+</html>
