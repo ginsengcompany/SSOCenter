@@ -8,6 +8,7 @@ var config = require('./config.js')
 var authenticate = require('./components/oauth/authenticate')
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var administationPanel = require('./routes/administationPanel');
 
 var app = express();
 
@@ -34,6 +35,7 @@ require('./components/oauth')(app)
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/administationPanel',administationPanel);
 
 app.get('/secure', authenticate(), function(req,res){
   res.json({message: 'Secure data'})

@@ -1,0 +1,162 @@
+extends layout
+
+block title
+    title EasySO - SSO - Admin Panel
+        //if (gte IE 6)&(lte IE 8)
+          noscript
+            link(rel='stylesheet', href='css/fallback.css')
+block style
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/mdb.min.css')
+
+block body
+    body.hidden-sn.mdb-skin
+        header
+            // Sidebar navigation
+            #slide-out.side-nav.sn-bg-4.mdb-sidenav
+                ul.custom-scrollbar.list-unstyled(style='max-height:100vh;')
+                    // Logo
+                    li
+                        .logo-wrapper.waves-light
+                            a(href='#')
+                                img.img-fluid.flex-center(src='https://mdbootstrap.com/img/logo/mdb-transparent.png')
+                    // /. Logo
+                    // Social
+                    li
+                        ul.social
+                            li
+                                a.icons-sm.fb-ic(href='#')
+                                    i.fa.fa-facebook
+                            li
+                                a.icons-sm.pin-ic(href='#')
+                                    i.fa.fa-pinterest
+                            li
+                                a.icons-sm.gplus-ic(href='#')
+                                    i.fa.fa-google-plus
+                            li
+                                a.icons-sm.tw-ic(href='#')
+                                    i.fa.fa-twitter
+                    // /Social
+                    // Search Form
+                    li
+                        form.search-form(role='search')
+                            .form-group.md-form.mt-0.pt-1.waves-light
+                                input.form-control(type='text', placeholder='Search')
+                    // /.Search Form
+                    // Side navigation links
+                    li
+                        ul.collapsible.collapsible-accordion
+                            li
+                                a.collapsible-header.waves-effect.arrow-r
+                                    i.fa.fa-chevron-right
+                                    |  Submit blog
+                                    i.fa.fa-angle-down.rotate-icon
+                                .collapsible-body
+                                    ul
+                                        li
+                                            a.waves-effect(href='#') Submit listing
+                                        li
+                                            a.waves-effect(href='#') Registration form
+                            li
+                                a.collapsible-header.waves-effect.arrow-r
+                                    i.fa.fa-hand-pointer-o
+                                    |  Instruction
+                                    i.fa.fa-angle-down.rotate-icon
+                                .collapsible-body
+                                    ul
+                                        li
+                                            a.waves-effect(href='#') For bloggers
+                                        li
+                                            a.waves-effect(href='#') For authors
+                            li
+                                a.collapsible-header.waves-effect.arrow-r
+                                    i.fa.fa-eye
+                                    |  About
+                                    i.fa.fa-angle-down.rotate-icon
+                                .collapsible-body
+                                    ul
+                                        li
+                                            a.waves-effect(href='#') Introduction
+                                        li
+                                            a.waves-effect(href='#') Monthly meetings
+                            li
+                                a.collapsible-header.waves-effect.arrow-r
+                                    i.fa.fa-envelope-o
+                                    |  Contact me
+                                    i.fa.fa-angle-down.rotate-icon
+                                .collapsible-body
+                                    ul
+                                        li
+                                            a.waves-effect(href='#') FAQ
+                                        li
+                                            a.waves-effect(href='#') Write a message
+                                        li
+                                            a.waves-effect(href='#') FAQ
+                                        li
+                                            a.waves-effect(href='#') Write a message
+                                        li
+                                            a.waves-effect(href='#') FAQ
+                                        li
+                                            a.waves-effect(href='#') Write a message
+                                        li
+                                            a.waves-effect(href='#') FAQ
+                                        li
+                                            a.waves-effect(href='#') Write a message
+                    // /. Side navigation links
+                .sidenav-bg.mask-strong
+            // /. Sidebar navigation
+            // Navbar
+            nav.navbar.fixed-top.navbar-toggleable-md.navbar-expand-lg.scrolling-navbar.double-nav
+                // SideNav slide-out button
+                .float-left
+                    a.button-collapse(href='#', data-activates='slide-out')
+                        i.fa.fa-bars
+                // Breadcrumb
+                .breadcrumb-dn.mr-auto
+                    p Material Design for Bootstrap
+                ul.nav.navbar-nav.nav-flex-icons.ml-auto
+                    li.nav-item
+                        a.nav-link
+                            i.fa.fa-envelope
+                            span.clearfix.d-none.d-sm-inline-block Contact
+                    li.nav-item
+                        a.nav-link
+                            i.fa.fa-comments-o
+                            span.clearfix.d-none.d-sm-inline-block Support
+                    li.nav-item
+                        a.nav-link
+                            i.fa.fa-user
+                            span.clearfix.d-none.d-sm-inline-block Account
+                    li.nav-item.dropdown
+                        a#navbarDropdownMenuLink.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+                            | Dropdown
+                        .dropdown-menu.dropdown-menu-right(aria-labelledby='navbarDropdownMenuLink')
+                            a.dropdown-item(href='#') Action
+                            a.dropdown-item(href='#') Another action
+                            a.dropdown-item(href='#') Something else here
+            // /.Navbar
+        // /.Double navigation
+        // Main Layout
+        main
+            .container-fluid.mt-5
+                h2 Advanced Double Navigation with hidden SideNav & fixed Navbar:
+                br
+                h5 1. Hidden side menu. Click "hamburger" icon in the top left corner to open it.
+                h5
+                    | 2. Fixed navbar. It will always stay visible on the top, even when you scroll down.
+                div(style='height: 2000px')
+        // Main Layout
+        // SCRIPTS
+        // JQuery
+        script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
+        // Tooltips
+        script(type='text/javascript', src='/js/popper.min.js')
+        // Bootstrap core JavaScript
+        script(type='text/javascript', src='/js/bootstrap.min.js')
+        // MDB core JavaScript
+        script(type='text/javascript', src='/js/mdb.min.js')
+        script.
+            // SideNav Initialization
+            $(".button-collapse").sideNav();
+

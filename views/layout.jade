@@ -1,7 +1,21 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+    head
+        block title
+            title= title
+        block meta
+            meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+            meta(http-equiv='Content-Language', content='it')
+            meta(name='Robots', content='All')
+            meta(name='Description', content='')
+            meta(name='Keywords', content='javascript')
+            meta(name='Owner', content='')
+            meta(name='Author', content='')
+            meta(name='Copyright', content='')
+            meta(http-equiv='x-ua-compatible', content='ie=edge')
+            meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+            link(rel='shortcut icon', type='image/ico', href='images/logo.png')
+        block style
+
+        block javascript
+block body
