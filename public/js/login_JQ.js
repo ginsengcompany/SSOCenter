@@ -67,7 +67,7 @@ function sottoMettiForm() {
 
 
                     var strLogin = {
-                        "idutente"      : data.utenteid,
+                        "username"      : data.utenteid,
                         "cognome"       : data.utentecognome,
                         "nome"          : data.utentenome,
                         "codicefiscale" : data.utentecodicefiscale,

@@ -2,16 +2,14 @@ extends layout
 
 block title
     title EasySO - SSO - Admin Panel
-        //if (gte IE 6)&(lte IE 8)
-          noscript
-            link(rel='stylesheet', href='css/fallback.css')
+        //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
 block style
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/mdb.min.css')
 
 block body
-    body.hidden-sn.mdb-skin
+    body.hidden-sn.grey-skin
         header
             // Sidebar navigation
             #slide-out.side-nav.sn-bg-4.mdb-sidenav
@@ -82,27 +80,13 @@ block body
                                             a.waves-effect(href='#') Monthly meetings
                             li
                                 a.collapsible-header.waves-effect.arrow-r
-                                    i.fa.fa-envelope-o
-                                    |  Contact me
+                                    i.fa.fa-user-o
+                                    |  Utenti
                                     i.fa.fa-angle-down.rotate-icon
                                 .collapsible-body
                                     ul
                                         li
-                                            a.waves-effect(href='#') FAQ
-                                        li
-                                            a.waves-effect(href='#') Write a message
-                                        li
-                                            a.waves-effect(href='#') FAQ
-                                        li
-                                            a.waves-effect(href='#') Write a message
-                                        li
-                                            a.waves-effect(href='#') FAQ
-                                        li
-                                            a.waves-effect(href='#') Write a message
-                                        li
-                                            a.waves-effect(href='#') FAQ
-                                        li
-                                            a.waves-effect(href='#') Write a message
+                                            a.waves-effect(href='/addUser') Aggiungi Utente
                     // /. Side navigation links
                 .sidenav-bg.mask-strong
             // /. Sidebar navigation
@@ -140,23 +124,20 @@ block body
         // Main Layout
         main
             .container-fluid.mt-5
-                h2 Advanced Double Navigation with hidden SideNav & fixed Navbar:
-                br
-                h5 1. Hidden side menu. Click "hamburger" icon in the top left corner to open it.
-                h5
-                    | 2. Fixed navbar. It will always stay visible on the top, even when you scroll down.
-                div(style='height: 2000px')
-        // Main Layout
-        // SCRIPTS
-        // JQuery
-        script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
-        // Tooltips
-        script(type='text/javascript', src='/js/popper.min.js')
-        // Bootstrap core JavaScript
-        script(type='text/javascript', src='/js/bootstrap.min.js')
-        // MDB core JavaScript
-        script(type='text/javascript', src='/js/mdb.min.js')
-        script.
-            // SideNav Initialization
-            $(".button-collapse").sideNav();
+block content
+
+    // Main Layout
+block javascript
+    // SCRIPTS
+    // JQuery
+    script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
+    // Tooltips
+    script(type='text/javascript', src='/js/popper.min.js')
+    // Bootstrap core JavaScript
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    // MDB core JavaScript
+    script(type='text/javascript', src='/js/mdb.min.js')
+    script.
+        // SideNav Initialization
+        $(".button-collapse").sideNav();
 

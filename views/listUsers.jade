@@ -1,0 +1,72 @@
+extends administationPanel
+
+block title
+    title EasySO - SSO - List Users
+        //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
+block style
+    link(rel='stylesheet', href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/mdb.min.css')
+
+block content
+                .row
+                    .col
+                        blockquote.blockquote.bq-primary
+                            p.h4.bq-title Elenco Utenti
+                            p
+                                | Elenco egli utenti presenti nel sistema.
+                .row
+                    .col
+                        table#example.display(style='width:100%')
+                            thead
+                                tr
+                                    th Name
+                                    th Position
+                                    th Office
+                                    th Age
+                                    th Start date
+                                    th Salary
+                            tbody
+                                tr
+                                    td Serge Baldwin
+                                    td Data Coordinator
+                                    td Singapore
+                                    td 64
+                                    td 2012/04/09
+                                    td $138,575
+                                tr
+                                    td Donna Snider
+                                    td Customer Support
+                                    td New York
+                                    td 27
+                                    td 2011/01/25
+                                    td $112,000
+                            tfoot
+                                tr
+                                    th Name
+                                    th Position
+                                    th Office
+                                    th Age
+                                    th Start date
+                                    th Salary
+
+block javascript
+    // SCRIPTS
+    // JQuery
+    script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
+    // Datatables
+    script(type='text/javascript', src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+    // Tooltips
+    script(type='text/javascript', src='/js/popper.min.js')
+    // Bootstrap core JavaScript
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    // MDB core JavaScript
+    script(type='text/javascript', src='/js/mdb.min.js')
+    script.
+        // SideNav Initialization
+        $(".button-collapse").sideNav();
+    script.
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
