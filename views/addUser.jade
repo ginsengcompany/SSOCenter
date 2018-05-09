@@ -1,0 +1,63 @@
+extends layout
+
+block title
+    title EasySO - SSO - Add User
+        //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
+block style
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/mdb.min.css')
+
+block content
+                .container
+                    .row
+                        .col
+                            blockquote.blockquote.bq-primary
+                                p.h4.bq-title Aggiungi Utente
+                                p
+                                    | Inserisci le informazioni del nuovo utente da inserire nel sistema di gestione Easy Sign On!
+                    .row
+                        .col
+                        .col
+                            // Material form register
+                            form#userRegister(action='')
+                                .md-form
+                                    i.fa.fa-user.prefix.grey-text
+                                    input#materialFormRegisterUsername.form-control(type='text')
+                                    label(for='materialFormRegisterUsername') Username
+                                // Material input email
+                                .md-form
+                                    i.fa.fa-key.prefix.grey-text
+                                    input#materialFormRegisterPasword.form-control(type='password')
+                                    label(for='materialFormRegisterPasword') Password
+                                .md-form
+                                    i.fa.fa-key.prefix.grey-text
+                                    input#materialFormRepeatPasword.form-control(type='password')
+                                    label(for='materialFormRepeatPasword') Ripeti Password
+                                // Material input email
+                                .md-form
+                                    i.fa.fa-exclamation-triangle.prefix.grey-text
+                                    input#materialFormRegisterClient.form-control(type='text')
+                                    label(for='materialFormRegisterClient') Applicazione
+                                // Material input password
+                                .md-form
+                                    i.fa.fa-lock.prefix.grey-text
+                                    input#materialFormRegisterOrganization.form-control(type='text')
+                                    label(for='materialFormRegisterOrganization') Organizzazione
+                                .md-form
+                                    i.fa.fa-briefcase.prefix.grey-text
+                                    input#materialFormRegisterRole.form-control(type='text')
+                                    label(for='materialFormRegisterRole') Ruolo
+                                .text-center.mt-4
+                                    button.btn.btn-primary(type='submit') Register
+                            // Material form register
+                        .col
+    // SCRIPTS
+    // JQuery
+    script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
+    // Tooltips
+    script(type='text/javascript', src='/js/popper.min.js')
+    // Bootstrap core JavaScript
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    // MDB core JavaScript
+    script(type='text/javascript', src='/js/mdb.min.js')

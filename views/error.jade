@@ -1,6 +1,15 @@
 extends layout
 
-block content
+block title
+  title EasySO - SSO - Error Page
+
+block style
+  link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+  link(rel='stylesheet', href='/css/bootstrap.min.css')
+  link(rel='stylesheet', href='/css/mdb.min.css')
+
+block body
+  button.btn.btn-primary(type='button') Primary
   h1= message
   h2= error.status
   pre #{error.stack}
