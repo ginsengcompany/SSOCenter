@@ -7,7 +7,7 @@ var Request = oauthServer.Request;
 var Response = oauthServer.Response;
 var config = require('../../config');
 var db = config.db==='mongo' ? require('./mongodb') : require('./sqldb');
-
+var moment = require('moment');
 var oauth = require('./oauth')
 
 module.exports = function(app){
@@ -19,6 +19,8 @@ module.exports = function(app){
       .token(request,response)
       .then(function(token) {
         // Todo: remove unnecessary values in response
+          token.accessTokenExpiresAt = moment(token.accessTokenExpiresAt).format('DD/MM/YYYY HH:mm:ss');
+          token.refreshTokenExpiresAt = moment(token.refreshTokenExpiresAt).format('DD/MM/YYYY HH:mm:ss');
         return res.json(token)
       }).catch(function(err){
         return res.status(500).json(err)

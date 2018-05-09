@@ -12,6 +12,7 @@ if(config.db === 'mongo'){
 }
 var oauth = require('./oauth')
 
+
 module.exports = function(options){
   var options = options || {};
   return function(req, res, next) {

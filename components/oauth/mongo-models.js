@@ -24,7 +24,7 @@ function getAccessToken(bearerToken) {
       token.user = token.User;
       token.client = token.OAuthClient;
       token.scope = token.scope;
-      token.accessTokenExpiresAt = token.expires;
+      token.accessTokenExpiresAt = token.expires.toLocaleDateString('it-IT', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
       return token;
     })
     .catch(function (err) {
@@ -113,7 +113,7 @@ function revokeToken(token) {
 
 
 function saveToken(token, client, user) {
-  console.log("saveToken",token, client, user)
+  console.log("saveToken",token, client, user);
   return Promise.all([
       OAuthAccessToken.create({
         access_token: token.accessToken,
@@ -124,7 +124,7 @@ function saveToken(token, client, user) {
       }),
       token.refreshToken ? OAuthRefreshToken.create({ // no refresh token for client_credentials
         refresh_token: token.refreshToken,
-        expires: token.refreshTokenExpiresAt,
+        expires: token.accessTokenExpiresAt,
         OAuthClient: client._id,
         User: user._id,
         scope: token.scope
@@ -171,7 +171,7 @@ function getAuthorizationCode(code) {
 }
 
 function saveAuthorizationCode(code, client, user) {
-  console.log("saveAuthorizationCode",code, client, user)
+  console.log("save " + code);
   return OAuthAuthorizationCode
     .create({
       expires: code.expiresAt,
