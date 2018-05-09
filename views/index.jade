@@ -4,28 +4,36 @@ block title
     title EasySO - SSO
   //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
 block style
-    link(rel='stylesheet', type='text/css', media='screen', href='style/style_login.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/mdb.min.css')
 
 block body
     body
-    #container2
-        img(src='images/logo.png', width='100', height='100', style='position:relative; margin:auto;')
-    #container
-        form#formLogin(action='', method='post')
-            .login LOGIN
-            .username-text Username:
-            .password-text Password:
-            .username-field
-                input#username.oklogin(type='text', name='username')
-            .password-field
-                input#password.oklogin(type='password', name='pwd')
-        input#remember-me(type='checkbox', name='remember-me')
-        label(for='remember-me') Remember me
-        .forgot-usr-pwd Hai dimenticato la password?
-      input(type='button', name='submit', value='VAI', onclick='sottoMettiForm();')
-    #footer
-        | Software realizzato da
-        a(href='http://www.gesan.it', target='_blank')  Gesan s.r.l.
+        div(style='height: 6em')
+        .row.h-100
+            .col-sm-12.my-auto
+                .card.mx-auto.w-50
+                    .card-body
+                        .form-header.blue-gradient.rounded
+                            h3
+                                i.fa.fa-lock
+                                |  Autenticazione:
+                        form.md-form(role='form', action="/registrazione", method="post")
+                        // Material input email
+                        .md-form.font-weight-light
+                            i.fa.fa-user.prefix.grey-text
+                            input#materialFormEmailEx.form-control(type='text', name='ssoId', placeholder='Username', required='')
+                            label(for='materialFormEmailEx') Il tuo Username
+                        // Material input password
+                        .md-form.font-weight-light
+                            i.fa.fa-lock.prefix.grey-text
+                            input#materialFormPasswordEx.form-control(type='password', name='password', placeholder='Password', required='')
+                            label(for='materialFormPasswordEx') La tua Password
+                        .text-center.mt-4
+                            button.btn.btn-light-blue.waves-effect.waves-light(type='submit', value='Log in') Entra
 
-script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
-script(type='text/javascript', charset='utf-8', src='/js/login_JQ.js')
+    script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
+    script(type='text/javascript', src='/js/popper.min.js')
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    script(type='text/javascript', src='/js/mdb.min.js')

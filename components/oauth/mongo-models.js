@@ -24,7 +24,7 @@ function getAccessToken(bearerToken) {
       token.user = token.User;
       token.client = token.OAuthClient;
       token.scope = token.scope;
-      token.accessTokenExpiresAt = token.expires.toLocaleDateString('it-IT', { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' });
+      token.accessTokenExpiresAt = token.expires;
       return token;
     })
     .catch(function (err) {

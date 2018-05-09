@@ -4,13 +4,13 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var config = require('./config.js')
-var authenticate = require('./components/oauth/authenticate')
+var config = require('./config.js');
+var authenticate = require('./components/oauth/authenticate');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var addUser = require('./routes/addUser');
 var listUsers = require('./routes/listUsers');
-var administationPanel = require('./routes/administationPanel');
+var administrationPanel = require('./routes/administrationPanel');
 
 var app = express();
 
@@ -39,7 +39,7 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/addUser', addUser);
 app.use('/listUsers', listUsers);
-app.use('/administationPanel',administationPanel);
+app.use('/administrationPanel',administrationPanel);
 
 app.get('/secure', authenticate(), function(req,res){
   res.json({message: 'Secure data'})
