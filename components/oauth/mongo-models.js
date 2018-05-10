@@ -9,6 +9,15 @@ var OAuthClient = mongodb.OAuthClient;
 var OAuthAccessToken = mongodb.OAuthAccessToken;
 var OAuthAuthorizationCode = mongodb.OAuthAuthorizationCode;
 var OAuthRefreshToken = mongodb.OAuthRefreshToken;
+let request = require('request');
+
+const options = {
+    method: 'POST',
+    uri:     'http://localhost:3000/oauth/token',
+    headers: {'content-type' : 'application/x-www-form-urlencoded', 'Authentication': 'Basic ZGVtb2NsaWVudDpkZW1vY2xpZW50c2VjcmV0' },
+    body:    {grant_type: 'password', user: 'admin', password: 'password'}
+}
+
 
 function getAccessToken(bearerToken) {
   console.log("getAccessToken",bearerToken)
@@ -233,7 +242,7 @@ function getRefreshToken(refreshToken) {
 
 function validateScope(token, client, scope) {
     console.log("validateScope", token, client, scope)
-    return (user.scope === client.scope) ? scope : false
+    return (user.scope === scope && client.scope === scope && scope !== null) ? scope : false
 }
 
 function verifyScope(token, scope) {
@@ -259,6 +268,22 @@ function addNewUser(req, res) {
         });
 }
 
+function login(req, res){
+     User.findOne({username: req.body.username, password : req.body.password}, function (err, user) {
+        if(user.username === 'admin' && user.password === 'admin'){
+            request({
+                method: 'POST',
+                uri:     'http://localhost:3000/oauth/token',
+                headers: {'content-type' : 'application/x-www-form-urlencoded', 'Authorization': 'Basic ZGVtb2NsaWVudDpkZW1vY2xpZW50c2VjcmV0' },
+                form:    {grant_type: 'password', username: 'admin', password: 'admin'},
+                json: true
+            }, function(err,response,body){
+                res = body.access_token
+                return res;
+            })
+    }
+})}
+
 module.exports = {
   //generateOAuthAccessToken, optional - used for jwt
   //generateAuthorizationCode, optional
@@ -276,6 +301,7 @@ module.exports = {
   saveAuthorizationCode: saveAuthorizationCode, //renamed saveOAuthAuthorizationCode,
   //validateScope: validateScope,
   verifyScope: verifyScope,
-  addNewUser: addNewUser
+  addNewUser: addNewUser,
+  login: login
 }
 

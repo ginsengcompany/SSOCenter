@@ -19,19 +19,18 @@ block body
                             h3
                                 i.fa.fa-lock
                                 |  Autenticazione:
-                        form.md-form(role='form', action="/registrazione", method="post")
-                        // Material input email
-                        .md-form.font-weight-light
-                            i.fa.fa-user.prefix.grey-text
-                            input#materialFormEmailEx.form-control(type='text', name='ssoId', placeholder='Username', required='')
-                            label(for='materialFormEmailEx') Il tuo Username
-                        // Material input password
-                        .md-form.font-weight-light
-                            i.fa.fa-lock.prefix.grey-text
-                            input#materialFormPasswordEx.form-control(type='password', name='password', placeholder='Password', required='')
-                            label(for='materialFormPasswordEx') La tua Password
-                        .text-center.mt-4
-                            button.btn.btn-light-blue.waves-effect.waves-light(type='submit', value='Log in') Entra
+                        form.md-form(action="/", method="post")
+                            .md-form.font-weight-light
+                                i.fa.fa-user.prefix.grey-text
+                                input#materialFormEmailEx.form-control(type='text', name='username', placeholder='Username', required='')
+                                label(for='materialFormEmailEx') Il tuo Username
+                            // Material input password
+                            .md-form.font-weight-light
+                                i.fa.fa-lock.prefix.grey-text
+                                input#materialFormPasswordEx.form-control(type='password', name='password', placeholder='Password', required='')
+                                label(for='materialFormPasswordEx') La tua Password
+                            .text-center.mt-4
+                                button.btn.btn-light-blue.waves-effect.waves-light(type='submit') Entra
 
     script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
     script(type='text/javascript', src='/js/popper.min.js')

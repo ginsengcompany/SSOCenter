@@ -237,7 +237,7 @@ function getRefreshToken(refreshToken) {
     });
 }
 
-function validateScope(token, client) {
+function validateScope(token, client, scope) {
   return (user.scope === scope && client.scope === scope && scope !== null) ? scope : false
 }
 
