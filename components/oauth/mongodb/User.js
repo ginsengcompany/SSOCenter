@@ -9,7 +9,8 @@ var mongoose = require('mongoose'),
 var UserSchema = new Schema({
   username:  String,
   password:  String,
-  scope: String
+  client : String,
+  type: {organization : String, role: String}
 });
 
 module.exports = mongoose.model('User', UserSchema);

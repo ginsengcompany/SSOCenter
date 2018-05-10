@@ -8,7 +8,7 @@ var Response = oauthServer.Response;
 var config = require('../../config');
 var db = config.db==='mongo' ? require('./mongodb') : require('./sqldb');
 var moment = require('moment');
-var oauth = require('./oauth')
+var oauth = require('./oauth');
 
 module.exports = function(app){
   app.all('/oauth/token', function(req,res,next){

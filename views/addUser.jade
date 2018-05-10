@@ -1,4 +1,4 @@
-extends layout
+extends administrationPanel
 
 block title
     title EasySO - SSO - Add User
@@ -20,44 +20,56 @@ block content
                         .col
                         .col
                             // Material form register
-                            form#userRegister(action='')
+                            form#userRegister(method='post', action='/addUser')
                                 .md-form
                                     i.fa.fa-user.prefix.grey-text
-                                    input#materialFormRegisterUsername.form-control(type='text')
+                                    input#materialFormRegisterUsername.form-control(type='text', name='materialFormRegisterUsername', required='')
                                     label(for='materialFormRegisterUsername') Username
                                 // Material input email
                                 .md-form
                                     i.fa.fa-key.prefix.grey-text
-                                    input#materialFormRegisterPasword.form-control(type='password')
-                                    label(for='materialFormRegisterPasword') Password
+                                    input#materialFormRegisterPassword.form-control(type='password', name='materialFormRegisterPassword', required='')
+                                    label(for='materialFormRegisterPassword') Password
                                 .md-form
                                     i.fa.fa-key.prefix.grey-text
-                                    input#materialFormRepeatPasword.form-control(type='password')
-                                    label(for='materialFormRepeatPasword') Ripeti Password
+                                    input#materialFormRepeatPassword.form-control(type='password', onchange= name='materialFormRepeatPassword', required='')
+                                    label(for='materialFormRepeatPassword') Ripeti Password
                                 // Material input email
                                 .md-form
                                     i.fa.fa-exclamation-triangle.prefix.grey-text
-                                    input#materialFormRegisterClient.form-control(type='text')
+                                    input#materialFormRegisterClient.form-control(type='text', name='materialFormRegisterClient', required='')
                                     label(for='materialFormRegisterClient') Applicazione
                                 // Material input password
                                 .md-form
                                     i.fa.fa-lock.prefix.grey-text
-                                    input#materialFormRegisterOrganization.form-control(type='text')
+                                    input#materialFormRegisterOrganization.form-control(type='text', name ='materialFormRegisterOrganization', required='')
                                     label(for='materialFormRegisterOrganization') Organizzazione
                                 .md-form
                                     i.fa.fa-briefcase.prefix.grey-text
-                                    input#materialFormRegisterRole.form-control(type='text')
+                                    input#materialFormRegisterRole.form-control(type='text', name='materialFormRegisterRole', required='')
                                     label(for='materialFormRegisterRole') Ruolo
                                 .text-center.mt-4
-                                    button.btn.btn-primary(type='submit') Register
+                                    button#btnSubmit.btn.btn-primary(type='submit') Register
                             // Material form register
                         .col
+block javascript
     // SCRIPTS
     // JQuery
     script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
+    // Datatables
     // Tooltips
     script(type='text/javascript', src='/js/popper.min.js')
     // Bootstrap core JavaScript
     script(type='text/javascript', src='/js/bootstrap.min.js')
     // MDB core JavaScript
     script(type='text/javascript', src='/js/mdb.min.js')
+    script.
+        $(document().ready( function () {
+           var password = document.getElementById('materialFormRegisterPassword').value;
+           var passwordRepeat = document.getElementById('materialFormRepeatPassword').value;
+           if (password !== passwordRepeat) {
+               $("#btnSubmit").click(function () {
+                   alert("Controllare la password");
+               });
+              }
+          }));

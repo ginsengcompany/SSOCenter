@@ -207,7 +207,7 @@ function getUserFromClient(client) {
 }
 
 function getRefreshToken(refreshToken) {
-  console.log("getRefreshToken", refreshToken)
+  console.log("getRefreshToken", refreshToken);
   if (!refreshToken || refreshToken === 'undefined') return false
 //[OAuthClient, User]
   return OAuthRefreshToken
@@ -240,6 +240,25 @@ function verifyScope(token, scope) {
     console.log("verifyScope", token, scope)
     return token.scope === scope
 }
+
+function addNewUser(req, res) {
+    return User
+        .create({
+            username: req.body.materialFormRegisterUsername,
+            password: req.body.materialFormRegisterPassword,
+            client: req.body.materialFormRegisterClient,
+            type: {
+                organization : req.body.materialFormRegisterOrganization,
+                role: req.body.materialFormRegisterRole
+            }
+        })
+        .then(function () {
+            return res.json('ok');
+        }).catch(function (err) {
+            console.log("saveAuthorizationCode - Err: ", err)
+        });
+}
+
 module.exports = {
   //generateOAuthAccessToken, optional - used for jwt
   //generateAuthorizationCode, optional
@@ -257,5 +276,6 @@ module.exports = {
   saveAuthorizationCode: saveAuthorizationCode, //renamed saveOAuthAuthorizationCode,
   //validateScope: validateScope,
   verifyScope: verifyScope,
+  addNewUser: addNewUser
 }
 
