@@ -8,9 +8,6 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.post('/', oauth.login, function () {
-      console.log(oauth.login);
-    }
-);
+router.post('/', oauth.login);
 
 module.exports = router;

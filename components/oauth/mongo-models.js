@@ -270,7 +270,7 @@ function addNewUser(req, res) {
 
 function login(req, res){
      User.findOne({username: req.body.username, password : req.body.password}, function (err, user) {
-        if(user.username === 'admin' && user.password === 'admin'){
+        if(user.type.role === 'admin'){
             request({
                 method: 'POST',
                 uri:     'http://localhost:3000/oauth/token',
@@ -278,8 +278,8 @@ function login(req, res){
                 form:    {grant_type: 'password', username: 'admin', password: 'admin'},
                 json: true
             }, function(err,response,body){
-                res = body.access_token
-                return res;
+                //res.setHeader('Authorization', 'Bearer ' + body.access_token);
+                res.redirect(body.client.redirect_uri + "?access_token=" + body.access_token);
             })
     }
 })}
