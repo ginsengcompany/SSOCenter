@@ -6,7 +6,7 @@ var oauth = require('../components/oauth/mongo-models');
 
 /* GET home page. */
 router.get('/', authenticate(), function(req, res, next) {
-    res.render('addUser');
+    res.render('addUser', {addUserUrl: '/addUser?access_token=' + req.query.access_token});
 });
 
 router.post('/', function (req, res) {

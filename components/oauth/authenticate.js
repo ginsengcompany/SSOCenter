@@ -32,7 +32,7 @@ module.exports = function(options){
       })
       .catch(function (err) {
         // Request is not authorized.
-        res.status(err.code || 500).json(err)
+        res.status(err.code || 500).render('index');
       });
   }
 }
