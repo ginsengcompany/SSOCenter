@@ -280,9 +280,24 @@ function login(req, res){
             }, function(err,response,body){
                 //res.setHeader('Authorization', 'Bearer ' + body.access_token);
                 res.redirect(body.client.redirect_uri + "?access_token=" + body.access_token);
-            })
-    }
-})}
+            });
+        }
+     });
+}
+
+function getUsersInformations(req, res) {
+    User.find({}, function(err, users) {
+        var myJson = {
+            "data" : users
+        };
+        for(var i=0; i<myJson.length; i++){
+            if(myJson.data[i].type.role === 'admin'){
+                myJson.data.splice(i, 1);
+            }
+        }
+        return res.json(myJson);
+    });
+}
 
 module.exports = {
   //generateOAuthAccessToken, optional - used for jwt
@@ -302,6 +317,7 @@ module.exports = {
   //validateScope: validateScope,
   verifyScope: verifyScope,
   addNewUser: addNewUser,
-  login: login
+  login: login,
+  getUsersInformations : getUsersInformations
 }
 

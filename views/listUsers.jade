@@ -21,35 +21,18 @@ block content
                         table#example.display(style='width:100%')
                             thead
                                 tr
-                                    th Name
-                                    th Position
-                                    th Office
-                                    th Age
-                                    th Start date
-                                    th Salary
-                            tbody
-                                tr
-                                    td Serge Baldwin
-                                    td Data Coordinator
-                                    td Singapore
-                                    td 64
-                                    td 2012/04/09
-                                    td $138,575
-                                tr
-                                    td Donna Snider
-                                    td Customer Support
-                                    td New York
-                                    td 27
-                                    td 2011/01/25
-                                    td $112,000
+                                    th Username
+                                    th Password
+                                    th Client
+                                    th Organizzazione
+                                    th Ruolo
                             tfoot
                                 tr
-                                    th Name
-                                    th Position
-                                    th Office
-                                    th Age
-                                    th Start date
-                                    th Salary
+                                    th Username
+                                    th Password
+                                    th Client
+                                    th Organizzazione
+                                    th Ruolo
 
 block javascript
     // SCRIPTS
@@ -68,5 +51,20 @@ block javascript
         $(".button-collapse").sideNav();
     script.
         $(document).ready(function () {
-            $('#example').DataTable();
+            $('#example').DataTable({
+                ajax: "/getUsers",
+                responsive: true,
+                ajaxSettings: {
+                    method: "GET",
+                    cache: false
+                },
+                columns: [
+                    {"data": "username"},
+                    {"data": "password"},
+                    {"data": "client"},
+                    {"data": "type.organization"},
+                    {"data": "type.role"}
+                ]
+            });
+
         });

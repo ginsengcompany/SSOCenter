@@ -10,6 +10,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var addUser = require('./routes/addUser');
 var listUsers = require('./routes/listUsers');
+var getUsers = require('./routes/getUsers');
 var administrationPanel = require('./routes/administrationPanel');
 
 var app = express();
@@ -40,6 +41,7 @@ app.use('/users', users);
 app.use('/addUser', addUser);
 app.use('/listUsers', listUsers);
 app.use('/administrationPanel',administrationPanel);
+app.use('/getUsers',getUsers);
 
 app.get('/secure', authenticate(), function(req,res){
   res.json({message: 'Secure data'})
