@@ -64,6 +64,8 @@ block javascript
     // MDB core JavaScript
     script(type='text/javascript', src='/js/mdb.min.js')
     script.
+        $(".button-collapse").sideNav();
+    script.
         $(document().ready( function () {
            var password = document.getElementById('materialFormRegisterPassword').value;
            var passwordRepeat = document.getElementById('materialFormRepeatPassword').value;

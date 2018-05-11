@@ -11,13 +11,7 @@ var OAuthAuthorizationCode = mongodb.OAuthAuthorizationCode;
 var OAuthRefreshToken = mongodb.OAuthRefreshToken;
 let request = require('request');
 
-const options = {
-    method: 'POST',
-    uri:     'http://localhost:3000/oauth/token',
-    headers: {'content-type' : 'application/x-www-form-urlencoded', 'Authentication': 'Basic ZGVtb2NsaWVudDpkZW1vY2xpZW50c2VjcmV0' },
-    body:    {grant_type: 'password', user: 'admin', password: 'password'}
-}
-
+var constToken;
 
 function getAccessToken(bearerToken) {
   console.log("getAccessToken",bearerToken)
@@ -279,6 +273,7 @@ function login(req, res){
                 json: true
             }, function(err,response,body){
                 //res.setHeader('Authorization', 'Bearer ' + body.access_token);
+                constToken = body.access_token;
                 res.redirect(body.client.redirect_uri + "?access_token=" + body.access_token);
             });
         }
@@ -318,6 +313,6 @@ module.exports = {
   verifyScope: verifyScope,
   addNewUser: addNewUser,
   login: login,
-  getUsersInformations : getUsersInformations
+  getUsersInformations : getUsersInformations,
 }
 

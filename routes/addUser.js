@@ -1,11 +1,12 @@
 var express = require('express');
 var oauth = require('../components/oauth/mongo-models');
 var router = express.Router();
-
+var authenticate = require('../components/oauth/authenticate');
+var oauth = require('../components/oauth/mongo-models');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    res.render('addUser', { title: 'Express' });
+router.get('/', authenticate(), function(req, res, next) {
+    res.render('addUser');
 });
 
 router.post('/', function (req, res) {
@@ -14,14 +15,6 @@ router.post('/', function (req, res) {
     }else{
         res.redirect('addUser')
     }
-});
-
-router.put('/addUser', function(req, res) {
-
-});
-
-router.delete('/addUser', function(req, res) {
-
 });
 
 
