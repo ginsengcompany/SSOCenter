@@ -4,7 +4,11 @@ var authenticate = require('../components/oauth/authenticate');
 
 /* GET home page. */
 router.get('/', authenticate(), function(req, res, next) {
-    res.render('administrationPanel', {addUserUrl: '/addUser?access_token=' + req.query.access_token});
+    res.render('administrationPanel',
+        {
+            addUserUrl: '/addUser?access_token=' + req.query.access_token,
+            listUserUrl: '/listUsers?access_token=' + req.query.access_token
+        });
 });
 
 module.exports = router;

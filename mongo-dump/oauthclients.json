@@ -6,3 +6,20 @@
     "User" : ObjectId("57382dd6e05342a003543d54"), 
     "__v" : NumberInt(0)
 }
+
+{
+    "_id": ObjectId("57382dd7e05342a003543d5b"),
+    "client_id": "democlient",
+    "client_secret": "democlientsecret",
+    "redirect_uri": "http://localhost:3000/administrationPanel",
+    "grants": [
+        "password",
+        "authorization_code",
+        "refresh_token",
+        "client_credentials"
+    ],
+    "scope": [
+        "profile"
+    ],
+    "__v": 0
+}

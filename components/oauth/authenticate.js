@@ -5,12 +5,12 @@
 var oauthServer = require('oauth2-server');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;
-var db = require('./sqldb')
+var db = require('./sqldb');
 var config = require('../../config');
 if(config.db === 'mongo'){
   db = require('./mongodb')
 }
-var oauth = require('./oauth')
+var oauth = require('./oauth');
 
 
 module.exports = function(options){
@@ -32,7 +32,7 @@ module.exports = function(options){
       })
       .catch(function (err) {
         // Request is not authorized.
-        res.status(err.code || 500).render('index');
+        res.status(err.code || 500).json(err);
       });
   }
 }

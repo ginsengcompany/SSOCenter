@@ -1,15 +1,34 @@
 extends layout
 
 block title
-  title EasySO - SSO - Error Page
+    title EasySO - SSO - Error Page
 
 block style
-  link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
-  link(rel='stylesheet', href='/css/bootstrap.min.css')
-  link(rel='stylesheet', href='/css/mdb.min.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/mdb.min.css')
 
 block body
-  button.btn.btn-primary(type='button') Primary
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+    body
+        .row
+            .col
+            
+            .col-6.m-5
+                // Card
+                .card.card-cascade.wider.reverse
+                    // Card image
+                    .view.overlay.p-5
+                        img.card-img-top(src='images/logo.png', alt='Logo')
+                    // Card content
+                    .card-body.text-center
+                        // Title
+                        h4.card-title
+                            = message
+                        // Subtitle
+                        h6.font-weight-bold.indigo-text.py-2
+                            = error.status
+                        // Text
+                        p.card-text
+                            #{error.stack}
+            .col
+

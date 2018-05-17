@@ -8,19 +8,68 @@ block style
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/mdb.min.css')
+    link(rel='stylesheet', href='/style/style.css')
 
 block content
-                .row
+                #modificaUtenteModal.modal.fade
+                    .modal-dialog.modal-lg
+                        .modal-content
+                            // dialog body
+                            .modal-header.text-center
+                                h2.modal-title Modifica Utente
+                                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                                    span(aria-hidden='true') ×
+                            .modal-body
+                                .row
+                                    .col
+                                        .form.mb-5
+                                            i.fa.fa-user.prefix.grey-text.mr-2
+                                            label(for='username') Username
+                                            input#username.form-control.validate(type='text')
+                                    .col
+                                        .form.mb-5
+                                            i.fa.fa-lock.prefix.grey-text.mr-2
+                                            label(data-error='wrong', data-success='right', for='password') Password
+                                            input#password.form-control.validate(type='password')
+                                    .col
+                                        .form.mb-5
+                                            i.fa.fa-desktop.prefix.grey-text.mr-2
+                                            label(for='client') Client
+                                            input#client.form-control.validate(type='text')
+                                .row
+                                    .col
+                                        .form.mb-5
+                                            i.fa.fa-sitemap.prefix.grey-text.mr-2
+                                            label(for='organizzazione') Organizzazione
+                                            input#organizzazione.form-control.validate(type='text')
+                                    .col
+                                        .form.mb-5
+                                            i.fa.fa-users.prefix.grey-text.mr-2
+                                            label(for='ruolo') Ruolo
+                                            input#ruolo.form-control.validate(type='text')
+                                    .col
+                                        .form.mb-5
+
+                            // dialog buttons
+                            .modal-footer
+                                button.btn.btn-primary.btn-block(type='button', onclick='updateUtente();') Salva
+                .row.m-3
                     .col
                         blockquote.blockquote.bq-primary
                             p.h4.bq-title Elenco Utenti
                             p
                                 | Elenco egli utenti presenti nel sistema.
-                .row
+                .row.m-3
                     .col
-                        table#example.display(style='width:100%')
+                        button#modificaUtente.btn.btn-primary.btn-lg(onclick='openModalModifica();' disabled='true') Modifica Contatto
+                    .col
+                        button#eliminaUtente.btn.btn-primary.btn-lg(onclick='eliminaUtente();' disabled='true') Elimina Contatto
+                .row.m-3
+                    .col.table-responsive
+                        table#example.display.nowrap(cellspacing='0', width='100%')
                             thead
                                 tr
+                                    th
                                     th Username
                                     th Password
                                     th Client
@@ -28,6 +77,7 @@ block content
                                     th Ruolo
                             tfoot
                                 tr
+                                    th
                                     th Username
                                     th Password
                                     th Client
@@ -39,32 +89,325 @@ block javascript
     // JQuery
     script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
     // Datatables
-    script(type='text/javascript', src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+    script(type='text/javascript', src='/js/dataTables.min.js')
     // Tooltips
     script(type='text/javascript', src='/js/popper.min.js')
     // Bootstrap core JavaScript
     script(type='text/javascript', src='/js/bootstrap.min.js')
+    // Formatting function DataTablesMin
+    script(type='text/javascript', src='/js/dataTableResMin.js')
     // MDB core JavaScript
     script(type='text/javascript', src='/js/mdb.min.js')
+    // SideNav Initialization
     script.
-        // SideNav Initialization
         $(".button-collapse").sideNav();
+    // Load Users Table
     script.
+
+        var arrayUtenti = {};
+
+        datiUtente = {
+            "_id": undefined,
+            "username": undefined,
+            "password": undefined,
+            "client": undefined,
+            "type": {
+                "organization": undefined,
+                "role": undefined
+            },
+            "action" : undefined
+        }
+
         $(document).ready(function () {
-            $('#example').DataTable({
+            table = $('#example').DataTable({
                 ajax: "/getUsers",
-                responsive: true,
                 ajaxSettings: {
                     method: "GET",
                     cache: false
                 },
                 columns: [
+                    {
+                        "data": null,
+                        "defaultContent": ""
+                    },
                     {"data": "username"},
                     {"data": "password"},
                     {"data": "client"},
                     {"data": "type.organization"},
                     {"data": "type.role"}
-                ]
+                ],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columnDefs: [{
+                    className: 'control',
+                    orderable: false,
+                    targets: 0
+                }],
+                order: [1, 'asc']
+            });
+
+            $('#example tbody').on('click', 'tr', function () {
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                    $('#modificaUtente').prop('disabled', true);
+                    $('#eliminaUtente').prop('disabled', true);
+                }
+                else {
+                    table.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                    $('#modificaUtente').prop('disabled', false);
+                    $('#eliminaUtente').prop('disabled', false);
+                }
+            });
+
+            $('#example tbody').on('click', 'td.details-control', function () {
+                let tr = $(this).closest('tr');
+                let row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    row.child(format(row.data())).show();
+                    tr.addClass('shown');
+                }
             });
 
         });
+
+    script.
+        function openModalModifica() {
+
+            let ids1 = $.map(table.rows('.selected').data(), function (item) {
+                return item;
+            });
+
+            arrayUtenti = ids1;
+            arrayUtenti.action = 'aggiorna'
+
+            $("#modificaUtenteModal").on("show", function () {
+                $("#modificaUtenteModal a.btn").on("click", function (e) {
+                    console.log("button pressed");
+                    $("#modificaUtenteModal").modal('hide');
+                });
+            });
+            $("#modificaUtenteModal").on("hide", function () {
+                $("#modificaUtenteModal a.btn").off("click");
+            });
+
+            $("#modificaUtenteModal").on("hidden", function () {
+                $("#modificaUtenteModal").remove();
+            });
+
+            $("#modificaUtenteModal").modal({
+                "backdrop": "static",
+                "keyboard": true,
+                "show": true
+            });
+
+            $('#username').val(arrayUtenti[0].username);
+            $('#password').val(arrayUtenti[0].password);
+            $('#client').val(arrayUtenti[0].client);
+            $('#organizzazione').val(arrayUtenti[0].type.organization);
+            $('#ruolo').val(arrayUtenti[0].type.role);
+        }
+
+        function eliminaUtente() {
+            let ids1 = $.map(table.rows('.selected').data(), function (item) {
+                return item;
+            });
+
+            arrayUtenti = ids1;
+            ids1[0].action = "elimina";
+
+            $.ajax({
+                url: '/listUsers',
+                type: 'POST',
+                data: JSON.stringify(ids1[0]),
+                cache: false,
+                contentType: 'application/json',
+                success: function (data) {
+
+                    if (data.errore === false) {
+                        table.ajax.reload();
+                        $('#modificaUtente').prop('disabled', true);
+                        $('#eliminaUtente').prop('disabled', true);
+                    }
+                },
+                faliure: function (data) {
+                }
+            });
+        }
+
+        function updateUtente() {
+
+            datiUtente._id = arrayUtenti[0]._id;
+            datiUtente.username = $('#username').val();
+            datiUtente.password = $('#password').val();
+            datiUtente.client = $('#client').val();
+            datiUtente.type.role = $('#ruolo').val();
+            datiUtente.type.organization = $('#organizzazione').val();
+            datiUtente.action = 'aggiorna';
+
+            $.ajax({
+                url: '/listUsers',
+                type: 'POST',
+                data: JSON.stringify(datiUtente),
+                cache: false,
+                contentType: 'application/json',
+                success: function (data) {
+
+                    if (data.errore === false) {
+
+                        $("#modificaUtenteModal").modal('hide');
+                        $('#modificaUtente').prop('disabled', true);
+                        $('#eliminaUtente').prop('disabled', true);
+                        table.ajax.reload();
+                    }
+                },
+                faliure: function (data) {
+                }
+            });
+
+        }
+
+        function AddUtente() {
+
+            datiUtente.username = $('#nome2').val();
+            datiUtente.password = $('#cognome2').val();
+            datiUtente.client = $('#specializzazione2').val();
+            datiUtente.type.organization = $('#provincia2').val();
+            datiUtente.type.role = $('#mail2').val();
+
+            $.ajax({
+                url: '/listUsers',
+                type: 'POST',
+                data: JSON.stringify(datiUtente),
+                cache: false,
+                contentType: 'application/json',
+                success: function (data) {
+
+                    if (data !== false) {
+                        $("#myModal2").modal('hide');
+                        $('#modificaUtente').prop('disabled', true);
+                        $('#eliminaUtente').prop('disabled', true);
+                        table.ajax.reload();
+
+                        $('#nome2').val('');
+                        $('#cognome2').val('');
+                        $('#specializzazione2').val('');
+                        $('#provincia2').val('');
+                        $('#mail2').val('');
+                        $('#username2').val('');
+                        $('#password2').val('');
+                        $('#telefono2').val('');
+                        $('#pec2').val('');
+                        $('#interessi2').val('');
+                    }
+
+
+                    if (data === false) {
+
+                        $("#myModal5").on("show", function () {
+                            $("#myModal5 a.btn").on("click", function (e) {
+                                console.log("button pressed");
+                                $("#myModal5").modal('hide');
+                            });
+                        });
+                        $("#myModal5").on("hide", function () {
+                            $("#myModal5 a.btn").off("click");
+                        });
+
+                        $("#myModal5").on("hidden", function () {
+                            $("#myModal5").remove();
+                        });
+
+                        $("#myModal5").modal({
+                            "backdrop": "static",
+                            "keyboard": true,
+                            "show": true
+                        });
+
+                    }
+
+                },
+                faliure: function (data) {
+                    $("#myModal3").on("show", function () {
+                        $("#myModal3 a.btn").on("click", function (e) {
+                            console.log("button pressed");
+                            $("#myModal3").modal('hide');
+                        });
+                    });
+                    $("#myModal3").on("hide", function () {
+                        $("#myModal3 a.btn").off("click");
+                    });
+
+                    $("#myModal3").on("hidden", function () {
+                        $("#myModal3").remove();
+                    });
+
+                    $("#myModal3").modal({
+                        "backdrop": "static",
+                        "keyboard": true,
+                        "show": true
+                    });
+                }
+            });
+        }
+
+        function openModal2() {
+
+            $("#myModal2").on("show", function () {
+                $("#myModal2 a.btn").on("click", function (e) {
+                    console.log("button pressed");
+                    $("#myModal2").modal('hide');
+                });
+            });
+            $("#myModal2").on("hide", function () {
+                $("#myModal2 a.btn").off("click");
+            });
+
+            $("#myModal2").on("hidden", function () {
+                $("#myModal2").remove();
+            });
+
+            $("#myModal2").modal({
+                "backdrop": "static",
+                "keyboard": true,
+                "show": true
+            });
+
+        }
+
+        function openModalAdd() {
+
+            $("#myModal4").on("show", function () {
+                $("#myModal4 a.btn").on("click", function (e) {
+                    console.log("button pressed");
+                    $("#myModal4").modal('hide');
+                });
+            });
+            $("#myModal4").on("hide", function () {
+                $("#myModal4 a.btn").off("click");
+            });
+
+            $("#myModal4").on("hidden", function () {
+                $("#myModal4").remove();
+            });
+
+            $("#myModal4").modal({
+                "backdrop": "static",
+                "keyboard": true,
+                "show": true
+            });
+
+        }
+
+

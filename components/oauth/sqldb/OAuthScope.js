@@ -5,7 +5,7 @@
 module.exports = function(sequelize, DataTypes) {
   var OAuthScope = sequelize.define('OAuthScope',  {
     id: {
-      type: DataTypes.INTEGER(11),
+      type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
       allowNull: false,
@@ -17,7 +17,6 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'oauth_scopes',
     timestamps: false,
     underscored: true
-  })
-
+  });
   return OAuthScope;
 }

@@ -17,39 +17,44 @@ block content
                                 p
                                     | Inserisci le informazioni del nuovo utente da inserire nel sistema di gestione Easy Sign On!
                     .row
+                        .container
+                            #myAlert.alert.alert-success.alert-dismissible
+                                a.close(href='#{addUserUrl}') ×
+                                strong Inserimento Eseguito con Successo!
+                                |  Record memorizzato.
                         .col
                         .col
                             // Material form register
                             form#userRegister(method='post', action='/addUser')
                                 .md-form
                                     i.fa.fa-user.prefix.grey-text
-                                    input#materialFormRegisterUsername.form-control(type='text', name='materialFormRegisterUsername', required='')
+                                    input#materialFormRegisterUsername.form-control(type='text', name='materialFormRegisterUsername', required='', disabled='false')
                                     label(for='materialFormRegisterUsername') Username
                                 // Material input email
                                 .md-form
                                     i.fa.fa-key.prefix.grey-text
-                                    input#materialFormRegisterPassword.form-control(type='password', name='materialFormRegisterPassword', required='')
+                                    input#materialFormRegisterPassword.form-control(type='password', name='materialFormRegisterPassword', required='', disabled='false')
                                     label(for='materialFormRegisterPassword') Password
                                 .md-form
                                     i.fa.fa-key.prefix.grey-text
-                                    input#materialFormRepeatPassword.form-control(type='password', name='materialFormRepeatPassword', required='')
+                                    input#materialFormRepeatPassword.form-control(type='password', name='materialFormRepeatPassword', required='', disabled='false')
                                     label(for='materialFormRepeatPassword') Ripeti Password
                                 // Material input email
                                 .md-form
                                     i.fa.fa-exclamation-triangle.prefix.grey-text
-                                    input#materialFormRegisterClient.form-control(type='text', name='materialFormRegisterClient', required='')
+                                    input#materialFormRegisterClient.form-control(type='text', name='materialFormRegisterClient', required='', disabled='false')
                                     label(for='materialFormRegisterClient') Applicazione
                                 // Material input password
                                 .md-form
                                     i.fa.fa-lock.prefix.grey-text
-                                    input#materialFormRegisterOrganization.form-control(type='text', name ='materialFormRegisterOrganization', required='')
+                                    input#materialFormRegisterOrganization.form-control(type='text', name ='materialFormRegisterOrganization', required='', disabled='false')
                                     label(for='materialFormRegisterOrganization') Organizzazione
                                 .md-form
                                     i.fa.fa-briefcase.prefix.grey-text
-                                    input#materialFormRegisterRole.form-control(type='text', name='materialFormRegisterRole', required='')
+                                    input#materialFormRegisterRole.form-control(type='text', name='materialFormRegisterRole', required='', disabled='false')
                                     label(for='materialFormRegisterRole') Ruolo
                                 .text-center.mt-4
-                                    button#btnSubmit.btn.btn-primary(type='submit') Register
+                                    button#btnSubmit.btn.btn-primary(type='submit', disabled='false') Register
                             // Material form register
                         .col
 block javascript
@@ -66,12 +71,40 @@ block javascript
     script.
         $(".button-collapse").sideNav();
     script.
-        $(document().ready( function () {
-           var password = document.getElementById('materialFormRegisterPassword').value;
-           var passwordRepeat = document.getElementById('materialFormRepeatPassword').value;
-           if (password !== passwordRepeat) {
-               $("#btnSubmit").click(function () {
-                   alert("Controllare la password");
-               });
-              }
-          }));
+        $(document).ready(function () {
+            var url_string = window.location.href;
+            var url = new URL(url_string);
+            var c = url.searchParams.get("esito");
+            if (c) {
+                if (c === 'true') {
+                    $('#materialFormRegisterUsername').prop('disabled', true);
+                    $('#materialFormRegisterPassword').prop('disabled', true);
+                    $('#materialFormRepeatPassword').prop('disabled', true);
+                    $('#materialFormRegisterClient').prop('disabled', true);
+                    $('#materialFormRegisterOrganization').prop('disabled', true);
+                    $('#materialFormRegisterRole').prop('disabled', true);
+                    $('#btnSubmit').prop('disabled', true);
+                    $(".close").click(function () {
+                        $("#myAlert").alert("open");
+                    });
+                } else {
+                    $('#materialFormRegisterUsername').prop('disabled', false);
+                    $('#materialFormRegisterPassword').prop('disabled', false);
+                    $('#materialFormRepeatPassword').prop('disabled', false);
+                    $('#materialFormRegisterClient').prop('disabled', false);
+                    $('#materialFormRegisterOrganization').prop('disabled', false);
+                    $('#materialFormRegisterRole').prop('disabled', false);
+                    $('#btnSubmit').prop('disabled', false);
+                    $("#myAlert").alert("close");
+                }
+            } else if (c === null) {
+                $('#materialFormRegisterUsername').prop('disabled', false);
+                $('#materialFormRegisterPassword').prop('disabled', false);
+                $('#materialFormRepeatPassword').prop('disabled', false);
+                $('#materialFormRegisterClient').prop('disabled', false);
+                $('#materialFormRegisterOrganization').prop('disabled', false);
+                $('#materialFormRegisterRole').prop('disabled', false);
+                $('#btnSubmit').prop('disabled', false);
+                $("#myAlert").alert("close");
+            }
+        });
