@@ -11,6 +11,9 @@ var users = require('./routes/users');
 var addUser = require('./routes/addUser');
 var listUsers = require('./routes/listUsers');
 var getUsers = require('./routes/getUsers');
+var getClient = require('./routes/getClient');
+var listClient = require('./routes/listClient');
+var addClient = require('./routes/addClient');
 var administrationPanel = require('./routes/administrationPanel');
 
 var app = express();
@@ -42,6 +45,9 @@ app.use('/addUser', addUser);
 app.use('/listUsers', listUsers);
 app.use('/administrationPanel',administrationPanel);
 app.use('/getUsers',getUsers);
+app.use('/getClient',getClient);
+app.use('/listClient',listClient);
+app.use('/addClient',addClient);
 
 app.get('/secure', authenticate(), function(req,res){
   res.json({message: 'Secure data'})

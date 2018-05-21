@@ -7,7 +7,7 @@ var configDB = require('../config');
 
 /* GET home page. */
 router.get('/', authenticate(), function (req, res, next) {
-    res.render('listUsers', {
+    res.render('listClient', {
         listUserUrl: '/listUsers?access_token=' + req.query.access_token,
         addUserUrl: '/addUser?access_token=' + req.query.access_token,
         listClientUrl: '/listClient?access_token=' + req.query.access_token,
@@ -21,7 +21,7 @@ router.post('/', function (req, res) {
             if (req.body._id) {
                 return oauthMongo.deleteUser(req, res);
             } else {
-                res.redirect('listUsers')
+                res.redirect('listClient')
             }
         } else if (req.body.action === "aggiorna") {
             return oauthMongo.updateUser(req, res)
@@ -31,7 +31,7 @@ router.post('/', function (req, res) {
             if (req.body.id) {
                 return oauthSql.deleteUser(req, res);
             } else {
-                res.redirect('listUsers')
+                res.redirect('listClient')
             }
         } else if (req.body.action === "aggiorna") {
             return oauthSql.updateUser(req, res)

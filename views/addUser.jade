@@ -18,10 +18,9 @@ block content
                                     | Inserisci le informazioni del nuovo utente da inserire nel sistema di gestione Easy Sign On!
                     .row
                         .container
-                            #myAlert.alert.alert-success.alert-dismissible
+                            #myAlert.alert.alert-dismissible
                                 a.close(href='#{addUserUrl}') ×
-                                strong Inserimento Eseguito con Successo!
-                                |  Record memorizzato.
+                                strong#testo Inserimento Eseguito con Successo!
                         .col
                         .col
                             // Material form register
@@ -77,6 +76,7 @@ block javascript
             var c = url.searchParams.get("esito");
             if (c) {
                 if (c === 'true') {
+                    $("#myAlert").addClass("alert-success");
                     $('#materialFormRegisterUsername').prop('disabled', true);
                     $('#materialFormRegisterPassword').prop('disabled', true);
                     $('#materialFormRepeatPassword').prop('disabled', true);
@@ -88,6 +88,8 @@ block javascript
                         $("#myAlert").alert("open");
                     });
                 } else {
+                    $("#myAlert").addClass("alert-danger");
+                    $("#testo").text('Errore di inserimento: utente già presente!');
                     $('#materialFormRegisterUsername').prop('disabled', false);
                     $('#materialFormRegisterPassword').prop('disabled', false);
                     $('#materialFormRepeatPassword').prop('disabled', false);
@@ -95,7 +97,7 @@ block javascript
                     $('#materialFormRegisterOrganization').prop('disabled', false);
                     $('#materialFormRegisterRole').prop('disabled', false);
                     $('#btnSubmit').prop('disabled', false);
-                    $("#myAlert").alert("close");
+                    $("#myAlert").alert("open");
                 }
             } else if (c === null) {
                 $('#materialFormRegisterUsername').prop('disabled', false);

@@ -1,0 +1,106 @@
+extends administrationPanel
+
+block title
+    title EasySO - SSO - Add User
+        //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
+block style
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/css/mdb.min.css')
+
+block content
+    .container
+        .row
+            .col
+                blockquote.blockquote.bq-primary
+                    p.h4.bq-title Aggiungi Client
+                    p
+                        | Inserisci le informazioni del nuovo Client da gestire col sistema Easy Sign On!
+        .row
+            .container
+                #myAlert.alert.alert-dismissible
+                    a.close(href='#{addClientUrl}') ×
+                    strong#testo Inserimento Eseguito con Successo!
+            .col
+            .col
+                // Material form register
+                form#userRegister(method='post', action='/addClient')
+                    .md-form
+                        i.fa.fa-id-card.prefix.grey-text
+                        input#materialFormClientId.form-control(type='text', name='materialFormClientId', required='', disabled='false')
+                        label(for='materialFormClientId') Client ID
+                    .md-form
+                        i.fa.fa-user-secret.prefix.grey-text
+                        input#materialFormClientSecret.form-control(type='text', name='materialFormClientSecret', required='', disabled='false')
+                        label(for='materialFormClientSecret') Client Secret
+                    .md-form
+                        i.fa.fa-windows.prefix.grey-text
+                        input#materialRedirectUri.form-control(type='text', name='materialRedirectUri', required='', disabled='false')
+                        label(for='materialRedirectUri') Redirect URI
+                    .md-form
+                        select#materialGrantTypes.mdb-select.colorful-select.dropdown-primary(multiple='', name='materialGrantTypes', required='')
+                            option(value='', disabled='', selected='') Seleziona
+                            option(value='password') password
+                            option(value='authorization_code') authorization code
+                            option(value='refresh_token') refresh token
+                            option(value='client_credentials') client credentials
+                        label Modalità accesso
+                        //button.btn-save.btn.btn-primary.btn-sm Save
+                    // Material input password
+                    // TO DO: Mancherebbe lo scope
+                    .text-center.mt-4
+                        button#btnSubmit.btn.btn-primary(type='submit', disabled='false') Register
+                // Material form register
+            .col
+block javascript
+    // SCRIPTS
+    // JQuery
+    script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
+    // Datatables
+    // Tooltips
+    script(type='text/javascript', src='/js/popper.min.js')
+    // Bootstrap core JavaScript
+    script(type='text/javascript', src='/js/bootstrap.min.js')
+    // MDB core JavaScript
+    script(type='text/javascript', src='/js/mdb.min.js')
+    script.
+        $(".button-collapse").sideNav();
+    script.
+        $(document).ready(function () {
+            $('.mdb-select').material_select();
+        });
+    script.
+        $(document).ready(function () {
+            var url_string = window.location.href;
+            var url = new URL(url_string);
+            var c = url.searchParams.get("esito");
+            if (c) {
+                if (c === 'true') {
+                    $("#myAlert").addClass("alert-success");
+                    $('#materialFormClientId').prop('disabled', true);
+                    $('#materialFormClientSecret').prop('disabled', true);
+                    $('#materialRedirectUri').prop('disabled', true);
+                    $('#materialGrantTypes').prop('disabled', true);
+                    $('#btnSubmit').prop('disabled', true);
+                    $(".close").click(function () {
+                        $("#myAlert").alert("open");
+                    });
+                } else {
+                    $("#myAlert").addClass("alert-danger");
+                    $("#testo").text('Errore di inserimento: utente già presente!');
+                    $('#materialFormClientId').prop('disabled', false);
+                    $('#materialFormClientSecret').prop('disabled', false);
+                    $('#materialRedirectUri').prop('disabled', false);
+                    $('#materialGrantTypes').prop('disabled', false);
+                    $('#btnSubmit').prop('disabled', false);
+                    $("#myAlert").alert("open");
+                }
+            } else if (c === null) {
+                $('#materialFormClientId').prop('disabled', false);
+                $('#materialFormClientSecret').prop('disabled', false);
+                $('#materialRedirectUri').prop('disabled', false);
+                $('#materialGrantTypes').prop('disabled', false);
+                $('#btnSubmit').prop('disabled', false);
+                $("#myAlert").alert("close");
+            }
+        });

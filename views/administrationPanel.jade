@@ -44,28 +44,17 @@ block body
                     // Side navigation links
                     li
                         ul.collapsible.collapsible-accordion
-                            li
-                                a.collapsible-header.waves-effect.arrow-r
-                                    i.fa.fa-chevron-right
-                                    |  Submit blog
-                                    i.fa.fa-angle-down.rotate-icon
-                                .collapsible-body
-                                    ul
-                                        li
-                                            a.waves-effect(href='#') Submit listing
-                                        li
-                                            a.waves-effect(href='#') Registration form
-                            li
-                                a.collapsible-header.waves-effect.arrow-r
-                                    i.fa.fa-hand-pointer-o
-                                    |  Instruction
-                                    i.fa.fa-angle-down.rotate-icon
-                                .collapsible-body
-                                    ul
-                                        li
-                                            a.waves-effect(href='#') For bloggers
-                                        li
-                                            a.waves-effect(href='#') For authors
+                            //li
+                            //    a.collapsible-header.waves-effect.arrow-r
+                            //        i.fa.fa-chevron-right
+                            //        |  Submit blog
+                            //        i.fa.fa-angle-down.rotate-icon
+                            //    .collapsible-body
+                            //        ul
+                            //            li
+                            //                a.waves-effect(href='#') Submit listing
+                            //            li
+                            //                a.waves-effect(href='#') Registration form
                             li
                                 a.collapsible-header.waves-effect.arrow-r
                                     i.fa.fa-desktop
@@ -74,7 +63,9 @@ block body
                                 .collapsible-body
                                     ul
                                         li
-                                            a.waves-effect(href='#') Aggiungi Client
+                                            a.waves-effect(href='#{addClientUrl}') Aggiungi Client
+                                        li
+                                            a.waves-effect(href='#{listClientUrl}') Lista Client
                             li
                                 a.collapsible-header.waves-effect.arrow-r
                                     i.fa.fa-user-o
@@ -86,6 +77,17 @@ block body
                                             a.waves-effect(href='#{addUserUrl}') Aggiungi Utente
                                         li
                                             a.waves-effect(href='#{listUserUrl}') Lista Utenti
+                            li
+                                a.collapsible-header.waves-effect.arrow-r
+                                    i.fa.fa-lock
+                                    |  Gestione Token
+                                    i.fa.fa-angle-down.rotate-icon
+                                .collapsible-body
+                                    ul
+                                        li
+                                            a.waves-effect(href='#') Elimina Token Scaduti
+                                        li
+                                            a.waves-effect(href='#') Revoca Token
                     // /. Side navigation links
                 .sidenav-bg.mask-strong
             // /. Sidebar navigation

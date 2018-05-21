@@ -43,10 +43,10 @@ function getClient(clientId, clientSecret) {
         .then(function (client) {
             if (!client) return new Error("client not found");
             var clientWithGrants = client
-            clientWithGrants.grants = ['authorization_code', 'password', 'refresh_token', 'client_credentials']
+            clientWithGrants.grants = ['authorization_code', 'password', 'refresh_token', 'client_credentials'];
             // Todo: need to create another table for redirect URIs
-            clientWithGrants.redirectUris = [clientWithGrants.redirect_uri]
-            delete clientWithGrants.redirect_uri
+            clientWithGrants.redirectUris = [clientWithGrants.redirect_uri];
+            delete clientWithGrants.redirect_uri;
             //clientWithGrants.refreshTokenLifetime = integer optional
             //clientWithGrants.accessTokenLifetime  = integer optional
             return clientWithGrants
@@ -156,8 +156,8 @@ function getAuthorizationCode(code) {
         .populate('OAuthClient')
         .then(function (authCodeModel) {
             if (!authCodeModel) return false;
-            var client = authCodeModel.OAuthClient
-            var user = authCodeModel.User
+            var client = authCodeModel.OAuthClient;
+            var user = authCodeModel.User;
             return reCode = {
                 code: code,
                 client: client,
@@ -182,7 +182,7 @@ function saveAuthorizationCode(code, client, user) {
             scope: code.scope
         })
         .then(function () {
-            code.code = code.authorizationCode
+            code.code = code.authorizationCode;
             return code
         }).catch(function (err) {
             console.log("saveAuthorizationCode - Err: ", err)
@@ -243,7 +243,7 @@ function verifyScope(token, scope) {
 }
 
 function addNewUser(req, res) {
-    return User.create({
+    return User.findOne({
         username: req.body.materialFormRegisterUsername,
         password: req.body.materialFormRegisterPassword,
         client: req.body.materialFormRegisterClient,
@@ -251,8 +251,21 @@ function addNewUser(req, res) {
             organization: req.body.materialFormRegisterOrganization,
             role: req.body.materialFormRegisterRole
         }
-    }).then(function () {
-        res.redirect(req.headers.referer + '&esito=true');
+    }).then(function (user) {
+        if (!user) {
+            User.create({
+                username: req.body.materialFormRegisterUsername,
+                password: req.body.materialFormRegisterPassword,
+                client: req.body.materialFormRegisterClient,
+                type: {
+                    organization: req.body.materialFormRegisterOrganization,
+                    role: req.body.materialFormRegisterRole
+                }
+            });
+            res.redirect(req.headers.referer + '&esito=true');
+        }
+        else
+            res.redirect(req.headers.referer + '&esito=false');
     }).catch(function (err) {
         //console.log("saveAuthorizationCode - Err: ", err)
         res.redirect(req.headers.referer + '&esito=false');
@@ -307,6 +320,15 @@ function getUsersInformations(req, res) {
     });
 }
 
+function getClientInformations(req, res) {
+    OAuthClient.find({}, function (err, client) {
+        var myJson = {
+            "data": client
+        };
+        return res.json(myJson);
+    });
+}
+
 function deleteUser(req, res) {
     User.findOneAndRemove({_id: req.body._id}, function (err, user) {
         if (!err) {
@@ -336,6 +358,44 @@ function updateUser(req, res) {
         });
 }
 
+function addNewClient(req, res) {
+    arrayGrants = [];
+    return OAuthClient.findOne({
+        client_id: req.body.materialFormClientId,
+        client_secret: req.body.materialFormClientSecret,
+        redirect_uri: req.body.materialRedirectUri
+    })
+        .then(function (client) {
+            if (!client) {
+                var arr = 0;
+                for (var i = 0; i < req.body.materialGrantTypes.length; i++) {
+                    if (req.body.materialGrantTypes[i] === 'password')
+                        arrayGrants[arr] = 'password';
+                    if (req.body.materialGrantTypes[i] === 'authorization_code')
+                        arrayGrants[arr] = 'authorization_code';
+                    if (req.body.materialGrantTypes[i] === 'refresh_token')
+                        arrayGrants[arr] = 'refresh_token';
+                    if (req.body.materialGrantTypes[i] === 'client_credentials')
+                        arrayGrants[arr] = 'client_credentials';
+                    arr = arr + 1;
+                }
+                OAuthClient.create({
+                    client_id: req.body.materialFormClientId,
+                    client_secret: req.body.materialFormClientSecret,
+                    redirect_uri: req.body.materialRedirectUri,
+                    grant_types: arrayGrants
+                });
+                res.redirect(req.headers.referer + '&esito=true');
+            }
+            else
+                res.redirect(req.headers.referer + '&esito=false');
+        }).catch(function (err) {
+            //console.log("saveAuthorizationCode - Err: ", err)
+            res.redirect(req.headers.referer + '&esito=false');
+        });
+}
+
+
 module.exports = {
     //generateOAuthAccessToken, optional - used for jwt
     //generateAuthorizationCode, optional
@@ -357,6 +417,8 @@ module.exports = {
     login: login,
     getUsersInformations: getUsersInformations,
     deleteUser: deleteUser,
-    updateUser: updateUser
+    updateUser: updateUser,
+    addNewClient: addNewClient,
+    getClientInformations: getClientInformations
 }
 

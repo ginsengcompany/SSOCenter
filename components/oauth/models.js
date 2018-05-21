@@ -248,16 +248,26 @@ function verifyScope(token, scope) {
 }
 
 function addNewUser(req, res) {
-    return User.create({
-        username: req.body.materialFormRegisterUsername,
-        password: req.body.materialFormRegisterPassword,
-        client: req.body.materialFormRegisterClient,
-        type: {
-            organization: req.body.materialFormRegisterOrganization,
-            role: req.body.materialFormRegisterRole
-        }
+    return User.findOrCreate({
+        where: {
+            username: req.body.materialFormRegisterUsername,
+            password: req.body.materialFormRegisterPassword,
+            client: req.body.materialFormRegisterClient,
+            type: {
+                organization: req.body.materialFormRegisterOrganization,
+                role: req.body.materialFormRegisterRole
+            }
+    }
+    }).spread((user, created) => {
+        console.log(user.get({
+            plain: true
+        }))
+        console.log(created);
     }).then(function () {
-        res.redirect(req.headers.referer + '&esito=true');
+        if (created)
+            res.redirect(req.headers.referer + '&esito=true');
+        else
+            res.redirect(req.headers.referer + '&esito=false');
     }).catch(function (err) {
         res.redirect(req.headers.referer + '&esito=false');
     });
@@ -330,6 +340,29 @@ function deleteUser(req, res) {
     });
 }
 
+
+
+function updateUser(req, res) {
+    User.update({
+        username: req.body.username,
+        password: req.body.password,
+        client: req.body.client,
+        type: {
+            organization: req.body.type.organization,
+            role: req.body.type.role
+        }
+    },
+        {
+            where: {
+                id: req.body.id
+             }
+        }).then(function (user){
+            return res.json({errore: false});
+        }).catch(function (err) {
+            return res.json({errore: false});
+    });
+}
+
 module.exports = {
     //generateOAuthAccessToken, optional - used for jwt
     //generateAuthorizationCode, optional
@@ -350,6 +383,7 @@ module.exports = {
     login: login,
     getUsersInformations: getUsersInformations,
     addNewUser: addNewUser,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    updateUser: updateUser
 }
 
