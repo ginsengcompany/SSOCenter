@@ -325,12 +325,22 @@ function getClientInformations(req, res) {
         var myJson = {
             "data": client
         };
+        console.log(myJson);
         return res.json(myJson);
     });
 }
 
 function deleteUser(req, res) {
     User.findOneAndRemove({_id: req.body._id}, function (err, user) {
+        if (!err) {
+            return res.json({errore: false});
+        } else
+            return res.json({errore: false});
+    });
+}
+
+function deleteClient(req, res) {
+    OAuthClient.findOneAndRemove({_id: req.body._id}, function (err, user) {
         if (!err) {
             return res.json({errore: false});
         } else
@@ -357,6 +367,24 @@ function updateUser(req, res) {
                 return res.json({errore: false});
         });
 }
+
+function updateClient(req, res) {
+    OAuthClient.findOneAndUpdate({_id: req.body._id},
+        {
+            $set: {
+                client_id: req.body.client_id,
+                client_secret: req.body.client_secret,
+                redirect_uri: req.body.redirect_uri,
+                grant_types: req.body.grant_types
+            }
+        }, {new: true}, function (err, doc) {
+            if (!err) {
+                return res.json({errore: false});
+             } else
+                return res.json({errore: false});
+        });
+}
+
 
 function addNewClient(req, res) {
     arrayGrants = [];
@@ -419,6 +447,8 @@ module.exports = {
     deleteUser: deleteUser,
     updateUser: updateUser,
     addNewClient: addNewClient,
-    getClientInformations: getClientInformations
+    getClientInformations: getClientInformations,
+    updateClient: updateClient,
+    deleteClient: deleteClient
 }
 

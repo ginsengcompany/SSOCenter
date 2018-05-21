@@ -19,12 +19,8 @@ router.post('/', function (req, res) {
     if (configDB.db === 'mongo') {
         oauthMongo.addNewClient(req, res);
     } else {
-        if (req.body.materialFormRegisterPassword === req.body.materialFormRepeatPassword) {
-            oauthSql.addNewUser(req, res);
-        } else {
-            res.redirect('addUser');
+        oauthSql.addNewUser(req, res);
         }
-    }
 });
 
 module.exports = router;

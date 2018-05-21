@@ -39,15 +39,17 @@ block content
                     .row
                         .col
                             .form.mb-5
-                                i.fa.fa-lock.prefix.grey-text.mr-2
-                                label(for='grantType') Modalita Accesso
-                                input#grantType.form-control.validate(type='text')
-                        .col
-                            .form.mb-5
+                                select#grantTypes.mdb-select.colorful-select.dropdown-primary(multiple='', name='grantTypes')
+                                    option(value='', disabled='', selected='') Seleziona
+                                    option(value='password') password
+                                    option(value='authorization_code') authorization code
+                                    option(value='refresh_token') refresh token
+                                    option(value='client_credentials') client credentials
+                                label Modalità Accesso
 
                 // dialog buttons
                 .modal-footer
-                    button.btn.btn-primary.btn-block(type='button', onclick='updateUtente();') Salva
+                    button.btn.btn-primary.btn-block(type='button', onclick='updateClient();') Salva
     .row.m-3
         .col
             blockquote.blockquote.bq-primary
@@ -56,9 +58,9 @@ block content
                     | Elenco dei client presenti nel sistema.
     .row.m-3
         .col
-            button#modificaUtente.btn.btn-primary.btn-lg(onclick='openModalModifica();' disabled='true') Modifica Client
+            button#modificaClient.btn.btn-primary.btn-lg(onclick='openModalModifica();' disabled='true') Modifica Client
         .col
-            button#eliminaUtente.btn.btn-primary.btn-lg(onclick='eliminaUtente();' disabled='true') Elimina Client
+            button#eliminaClient.btn.btn-primary.btn-lg(onclick='eliminaClient();' disabled='true') Elimina Client
     .row.m-3
         .col.table-responsive
             table#example.display.nowrap(cellspacing='0', width='100%')
@@ -66,7 +68,6 @@ block content
                     tr
                         th
                         th Client ID
-                        th Password
                         th Client Secret
                         th Redirect URI
                         th Modalita Accesso
@@ -74,7 +75,6 @@ block content
                     tr
                         th
                         th Client ID
-                        th Password
                         th Client Secret
                         th Redirect URI
                         th Modalita Accesso
@@ -98,6 +98,10 @@ block javascript
         $(".button-collapse").sideNav();
     // Load Users Table
     script.
+        $(document).ready(function() {
+            $('.mdb-select').material_select();
+         });
+    script.
 
         var arrayClient = {};
 
@@ -120,12 +124,13 @@ block javascript
                 columns: [
                     {
                         "data": null,
-                        "defaultContent": ""
+                        "defaultContent": ''
                     },
+
                     {"data": "client_id"},
                     {"data": "client_secret"},
                     {"data": "redirect_uri"},
-                    {"data": "grant_types"},
+                    {"data": "grant_types"}
                 ],
                 responsive: {
                     details: {
@@ -144,14 +149,14 @@ block javascript
             $('#example tbody').on('click', 'tr', function () {
                 if ($(this).hasClass('selected')) {
                     $(this).removeClass('selected');
-                    $('#modificaUtente').prop('disabled', true);
-                    $('#eliminaUtente').prop('disabled', true);
+                    $('#modificaClient').prop('disabled', true);
+                    $('#eliminaClient').prop('disabled', true);
                 }
                 else {
                     table.$('tr.selected').removeClass('selected');
                     $(this).addClass('selected');
-                    $('#modificaUtente').prop('disabled', false);
-                    $('#eliminaUtente').prop('disabled', false);
+                    $('#modificaClient').prop('disabled', false);
+                    $('#eliminaClient').prop('disabled', false);
                 }
             });
 
@@ -180,46 +185,45 @@ block javascript
                 return item;
             });
 
-            arrayUtenti = ids1;
-            arrayUtenti.action = 'aggiorna'
+            arrayClient = ids1;
+            arrayClient.action = 'aggiorna'
 
-            $("#modificaUtenteModal").on("show", function () {
-                $("#modificaUtenteModal a.btn").on("click", function (e) {
+            $("#modificaClientModal").on("show", function () {
+                $("#modificaClientModal a.btn").on("click", function (e) {
                     console.log("button pressed");
-                    $("#modificaUtenteModal").modal('hide');
+                    $("#modificaClientModal").modal('hide');
                 });
             });
-            $("#modificaUtenteModal").on("hide", function () {
-                $("#modificaUtenteModal a.btn").off("click");
+            $("#modificaClientModal").on("hide", function () {
+                $("#modificaClientModal a.btn").off("click");
             });
 
-            $("#modificaUtenteModal").on("hidden", function () {
-                $("#modificaUtenteModal").remove();
+            $("#modificaClientModal").on("hidden", function () {
+                $("#modificaClientModal").remove();
             });
 
-            $("#modificaUtenteModal").modal({
+            $("#modificaClientModal").modal({
                 "backdrop": "static",
                 "keyboard": true,
                 "show": true
             });
 
-            $('#username').val(arrayUtenti[0].username);
-            $('#password').val(arrayUtenti[0].password);
-            $('#client').val(arrayUtenti[0].client);
-            $('#organizzazione').val(arrayUtenti[0].type.organization);
-            $('#ruolo').val(arrayUtenti[0].type.role);
+            $('#clientID').val(arrayClient[0].client_id);
+            $('#clientSecret').val(arrayClient[0].client_secret);
+            $('#redirectUri').val(arrayClient[0].redirect_uri);
+            $('#grantTypes').val(arrayClient[0].grant_types);
         }
 
-        function eliminaUtente() {
+        function eliminaClient() {
             let ids1 = $.map(table.rows('.selected').data(), function (item) {
                 return item;
             });
 
-            arrayUtenti = ids1;
+            arrayClient = ids1;
             ids1[0].action = "elimina";
 
             $.ajax({
-                url: '/listUsers',
+                url: '/listClient',
                 type: 'POST',
                 data: JSON.stringify(ids1[0]),
                 cache: false,
@@ -228,8 +232,8 @@ block javascript
 
                     if (data.errore === false) {
                         table.ajax.reload();
-                        $('#modificaUtente').prop('disabled', true);
-                        $('#eliminaUtente').prop('disabled', true);
+                        $('#modificaClient').prop('disabled', true);
+                        $('#eliminaClient').prop('disabled', true);
                     }
                 },
                 faliure: function (data) {
@@ -237,30 +241,29 @@ block javascript
             });
         }
 
-        function updateUtente() {
+        function updateClient() {
 
-            datiUtente._id = arrayUtenti[0]._id;
-            datiUtente.id = arrayUtenti[0].id;
-            datiUtente.username = $('#username').val();
-            datiUtente.password = $('#password').val();
-            datiUtente.client = $('#client').val();
-            datiUtente.type.role = $('#ruolo').val();
-            datiUtente.type.organization = $('#organizzazione').val();
-            datiUtente.action = 'aggiorna';
+            datiClient._id = arrayClient[0]._id;
+            datiClient.id = arrayClient[0].id;
+            datiClient.client_id = $('#clientID').val();
+            datiClient.client_secret = $('#clientSecret').val();
+            datiClient.redirect_uri = $('#redirectUri').val();
+            datiClient.grant_types = $('#grantTypes').val();
+            datiClient.action = 'aggiorna';
 
             $.ajax({
-                url: '/listUsers',
+                url: '/listClient',
                 type: 'POST',
-                data: JSON.stringify(datiUtente),
+                data: JSON.stringify(datiClient),
                 cache: false,
                 contentType: 'application/json',
                 success: function (data) {
 
                     if (data.errore === false) {
 
-                        $("#modificaUtenteModal").modal('hide');
-                        $('#modificaUtente').prop('disabled', true);
-                        $('#eliminaUtente').prop('disabled', true);
+                        $("#modificaClientModal").modal('hide');
+                        $('#modificaClient').prop('disabled', true);
+                        $('#eliminaClient').prop('disabled', true);
                         table.ajax.reload();
                     }
                 },
@@ -288,8 +291,8 @@ block javascript
 
                     if (data !== false) {
                         $("#myModal2").modal('hide');
-                        $('#modificaUtente').prop('disabled', true);
-                        $('#eliminaUtente').prop('disabled', true);
+                        $('#modificaClient').prop('disabled', true);
+                        $('#eliminaClient').prop('disabled', true);
                         table.ajax.reload();
 
                         $('#nome2').val('');

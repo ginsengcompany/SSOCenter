@@ -19,22 +19,22 @@ router.post('/', function (req, res) {
     if(configDB.db === 'mongo') {
         if (req.body.action === "elimina") {
             if (req.body._id) {
-                return oauthMongo.deleteUser(req, res);
+                return oauthMongo.deleteClient(req, res);
             } else {
                 res.redirect('listClient')
             }
         } else if (req.body.action === "aggiorna") {
-            return oauthMongo.updateUser(req, res)
+            return oauthMongo.updateClient(req, res)
         }
     } else {
         if (req.body.action === "elimina") {
             if (req.body.id) {
-                return oauthSql.deleteUser(req, res);
+                return oauthSql.deleteClient(req, res);
             } else {
                 res.redirect('listClient')
             }
         } else if (req.body.action === "aggiorna") {
-            return oauthSql.updateUser(req, res)
+            return oauthSql.updateClient(req, res)
         }
     }
 

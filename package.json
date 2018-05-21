@@ -15,28 +15,28 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "cookie-parser": "~1.3.5",
-    "debug": "~2.2.0",
-    "express": "~4.13.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~3.1.0",
+    "express": "~4.16.3",
     "jade": "~1.11.0",
     "lodash": "^4.15.0",
     "lodash-cli": "^4.15.0",
     "moment": "^2.22.1",
     "moment-timezone": "^0.5.17",
-    "mongoose": "^4.4.17",
-    "morgan": "~1.6.1",
+    "mongoose": "^5.1.1",
+    "morgan": "~1.9.0",
     "mysql": "^2.10.2",
     "oauth2-server": "^3.0.0-b2",
     "pg": "^7.4.3",
     "request": "^2.86.0",
     "sequelize": "^4.37.7",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.5.0"
   },
   "devDependencies": {
     "jshint": "^2.9.1",
-    "mocha": "^3.1.2",
-    "should": "^5.0.1",
-    "sinon": "^1.13.0"
+    "mocha": "^5.2.0",
+    "should": "^13.2.1",
+    "sinon": "^5.0.7"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha 'test/**/*_test.js'",

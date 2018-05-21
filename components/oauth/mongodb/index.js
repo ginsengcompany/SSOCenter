@@ -6,10 +6,7 @@
 var config = require('./../../../config')
 var mongoose = require('mongoose');
 console.log(config.mongo.uri);
-let options = {
-  useMongoClient : true
-};
-mongoose.connect(config.mongo.uri, options, function(err) {
+mongoose.connect(config.mongo.uri, function(err) {
   if (err) return console.log(err);
   console.log('Mongoose Connected');
 });
