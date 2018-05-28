@@ -10,7 +10,7 @@ var OAuthClientSchema = new Schema({
   client_id:  String,
   client_secret: String,
   redirect_uri: String,
-  grant_types: [String] ,
+  grant_types: [String],
   scope: String,
   User:  { type : Schema.Types.ObjectId, ref: 'User' },
 });

@@ -10,6 +10,7 @@ var UserSchema = new Schema({
   username:  String,
   password:  String,
   client : String,
+  scope: String,
   type: {organization : String, role: String}
 });
 

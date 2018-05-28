@@ -50,6 +50,46 @@ block content
                 // dialog buttons
                 .modal-footer
                     button.btn.btn-primary.btn-block(type='button', onclick='updateClient();') Salva
+    #aggiungiClientModal.modal.fade
+        .modal-dialog.modal-lg
+            .modal-content
+                // dialog body
+                .modal-header.text-center
+                    h2.modal-title Aggiungi Client
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') ×
+                .modal-body
+                    .row
+                        .col
+                            .form.mb-5
+                                i.fa.fa-id-card.prefix.grey-text.mr-2
+                                label(for='aggiungiClientID') Client ID
+                                input#aggiungiClientID.form-control.validate(type='text')
+                        .col
+                            .form.mb-5
+                                i.fa.fa-user-secret.prefix.grey-text.mr-2
+                                label(for='aggiungiClientSecret') Client Secret
+                                input#aggiungiClientSecret.form-control.validate(type='text')
+                        .col
+                            .form.mb-5
+                                i.fa.fa-windows.prefix.grey-text.mr-2
+                                label(for='aggiungiRedirectUri') Redirect URI
+                                input#aggiungiRedirectUri.form-control.validate(type='text')
+                    .row
+                        .col
+                            .form.mb-5
+                                select#aggiungiGrantTypes.mdb-select.colorful-select.dropdown-primary(multiple='', name='grantTypes')
+                                    option(value='', disabled='', selected='') Seleziona
+                                    option(value='password') password
+                                    option(value='authorization_code') authorization code
+                                    option(value='refresh_token') refresh token
+                                    option(value='client_credentials') client credentials
+                                label Modalità Accesso
+
+                // dialog buttons
+                .modal-footer
+                    button.btn.btn-primary.btn-block(type='button', onclick='addNewClient();') Salva
+
     .row.m-3
         .col
             blockquote.blockquote.bq-primary
@@ -57,6 +97,8 @@ block content
                 p
                     | Elenco dei client presenti nel sistema.
     .row.m-3
+        .col
+            button#aggiungiClient.btn.btn-primary.btn-lg(onclick='openModalAggiungi();') Aggiungi Client
         .col
             button#modificaClient.btn.btn-primary.btn-lg(onclick='openModalModifica();' disabled='true') Modifica Client
         .col
@@ -98,9 +140,9 @@ block javascript
         $(".button-collapse").sideNav();
     // Load Users Table
     script.
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('.mdb-select').material_select();
-         });
+        });
     script.
 
         var arrayClient = {};
@@ -260,7 +302,7 @@ block javascript
                 success: function (data) {
 
                     if (data.errore === false) {
-
+                        console.log(data.errore);
                         $("#modificaClientModal").modal('hide');
                         $('#modificaClient').prop('disabled', true);
                         $('#eliminaClient').prop('disabled', true);
@@ -273,136 +315,44 @@ block javascript
 
         }
 
-        function AddUtente() {
+        function openModalAggiungi() {
+            $("#aggiungiClientModal").on("show", function () {
+                $("#aggiungiClientModal a.btn").on("click", function (e) {
+                    console.log("button pressed");
+                    $("#aggiungiClientModal").modal('hide');
+                });
+            });
+            $("#aggiungiClientModal").on("hide", function () {
+                $("#aggiungiClientModal a.btn").off("click");
+            });
 
-            datiUtente.username = $('#nome2').val();
-            datiUtente.password = $('#cognome2').val();
-            datiUtente.client = $('#specializzazione2').val();
-            datiUtente.type.organization = $('#provincia2').val();
-            datiUtente.type.role = $('#mail2').val();
+            $("#aggiungiClientModal").on("hidden", function () {
+                $("#aggiungiClientModal").remove();
+            });
 
+            $("#aggiungiClientModal").modal({
+                "backdrop": "static",
+                "keyboard": true,
+                "show": true
+            });
+        }
+        function addNewClient() {
+            datiClient.client_id = $('#aggiungiClientID').val();
+            datiClient.client_secret = $('#aggiungiClientSecret').val();
+            datiClient.redirect_uri = $('#aggiungiRedirectUri').val();
+            datiClient.grant_types = $('#aggiungiGrantTypes').val();
+            datiClient.action = 'aggiungi';
             $.ajax({
-                url: '/listUsers',
+                url: '/listClient',
                 type: 'POST',
-                data: JSON.stringify(datiUtente),
+                data: JSON.stringify(datiClient),
                 cache: false,
                 contentType: 'application/json',
                 success: function (data) {
-
-                    if (data !== false) {
-                        $("#myModal2").modal('hide');
-                        $('#modificaClient').prop('disabled', true);
-                        $('#eliminaClient').prop('disabled', true);
+                        $("#aggiungiClientModal").modal('hide');
                         table.ajax.reload();
-
-                        $('#nome2').val('');
-                        $('#cognome2').val('');
-                        $('#specializzazione2').val('');
-                        $('#provincia2').val('');
-                        $('#mail2').val('');
-                        $('#username2').val('');
-                        $('#password2').val('');
-                        $('#telefono2').val('');
-                        $('#pec2').val('');
-                        $('#interessi2').val('');
                     }
-
-
-                    if (data === false) {
-
-                        $("#myModal5").on("show", function () {
-                            $("#myModal5 a.btn").on("click", function (e) {
-                                console.log("button pressed");
-                                $("#myModal5").modal('hide');
-                            });
-                        });
-                        $("#myModal5").on("hide", function () {
-                            $("#myModal5 a.btn").off("click");
-                        });
-
-                        $("#myModal5").on("hidden", function () {
-                            $("#myModal5").remove();
-                        });
-
-                        $("#myModal5").modal({
-                            "backdrop": "static",
-                            "keyboard": true,
-                            "show": true
-                        });
-
-                    }
-
-                },
-                faliure: function (data) {
-                    $("#myModal3").on("show", function () {
-                        $("#myModal3 a.btn").on("click", function (e) {
-                            console.log("button pressed");
-                            $("#myModal3").modal('hide');
-                        });
-                    });
-                    $("#myModal3").on("hide", function () {
-                        $("#myModal3 a.btn").off("click");
-                    });
-
-                    $("#myModal3").on("hidden", function () {
-                        $("#myModal3").remove();
-                    });
-
-                    $("#myModal3").modal({
-                        "backdrop": "static",
-                        "keyboard": true,
-                        "show": true
-                    });
-                }
             });
-        }
-
-        function openModal2() {
-
-            $("#myModal2").on("show", function () {
-                $("#myModal2 a.btn").on("click", function (e) {
-                    console.log("button pressed");
-                    $("#myModal2").modal('hide');
-                });
-            });
-            $("#myModal2").on("hide", function () {
-                $("#myModal2 a.btn").off("click");
-            });
-
-            $("#myModal2").on("hidden", function () {
-                $("#myModal2").remove();
-            });
-
-            $("#myModal2").modal({
-                "backdrop": "static",
-                "keyboard": true,
-                "show": true
-            });
-
-        }
-
-        function openModalAdd() {
-
-            $("#myModal4").on("show", function () {
-                $("#myModal4 a.btn").on("click", function (e) {
-                    console.log("button pressed");
-                    $("#myModal4").modal('hide');
-                });
-            });
-            $("#myModal4").on("hide", function () {
-                $("#myModal4 a.btn").off("click");
-            });
-
-            $("#myModal4").on("hidden", function () {
-                $("#myModal4").remove();
-            });
-
-            $("#myModal4").modal({
-                "backdrop": "static",
-                "keyboard": true,
-                "show": true
-            });
-
         }
 
 

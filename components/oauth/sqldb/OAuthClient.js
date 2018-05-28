@@ -16,9 +16,9 @@ module.exports = function AppModel(sequelize, DataTypes) {
         client_id: DataTypes.STRING(80),
         client_secret: DataTypes.STRING(80),
         redirect_uri: DataTypes.STRING(2000),
-        grant_types: DataTypes.STRING(80),
+        grant_types: DataTypes.JSONB,
         scope: DataTypes.STRING,
-        //user_id: DataTypes.INTEGER
+        user_id: DataTypes.INTEGER
     }, {
         tableName: 'oauth_clients',
         timestamps: false,

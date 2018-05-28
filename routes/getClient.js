@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
     if(configDB.db === 'mongo') {
         return oauthMongo.getClientInformations(req, res);
     }
-    //else return oauthSql.getUsersInformations(req,res);
+    else return oauthSql.getClientInformations(req,res);
 });
 
 module.exports = router;

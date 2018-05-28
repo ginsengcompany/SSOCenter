@@ -23,16 +23,14 @@ function getAccessToken(bearerToken) {
                     attributes: ['id', 'username'],
                 }, OAuthClient
             ],
-        })
-        .then(function (accessToken) {
+        }).then(function (accessToken) {
             if (!accessToken) return false;
             var token = accessToken.toJSON();
             token.user = token.User;
             token.client = token.OAuthClient;
             token.scope = token.scope;
             return token;
-        })
-        .catch(function (err) {
+        }).catch(function (err) {
             console.log("getAccessToken - Err: ")
         });
 }
@@ -247,32 +245,6 @@ function verifyScope(token, scope) {
     return token.scope === scope
 }
 
-function addNewUser(req, res) {
-    return User.findOrCreate({
-        where: {
-            username: req.body.materialFormRegisterUsername,
-            password: req.body.materialFormRegisterPassword,
-            client: req.body.materialFormRegisterClient,
-            type: {
-                organization: req.body.materialFormRegisterOrganization,
-                role: req.body.materialFormRegisterRole
-            }
-    }
-    }).spread((user, created) => {
-        console.log(user.get({
-            plain: true
-        }))
-        console.log(created);
-    }).then(function () {
-        if (created)
-            res.redirect(req.headers.referer + '&esito=true');
-        else
-            res.redirect(req.headers.referer + '&esito=false');
-    }).catch(function (err) {
-        res.redirect(req.headers.referer + '&esito=false');
-    });
-}
-
 function login(req, res) {
     return User.findOne({
         where: {username: req.body.username, password: req.body.password},
@@ -328,40 +300,195 @@ function getUsersInformations(req, res) {
     });
 }
 
+
+function filterUsersByID(req, res) {
+    User.findAll({
+        where: {
+            client_id: {
+                $or: {
+                    $ne: req.body.id,
+                    $eq: null
+                }
+            }
+    }}).then(function (users) {
+        var myJson = {
+            "data": users
+        };
+        return res.json(myJson);
+    }).catch(function (err) {
+        var myJson = {
+            "data": err.message
+        };
+        return res.json(myJson);
+    });
+}
+
+function getClientInformations(req, res) {
+    OAuthClient.findAll({}).then(function (client) {
+        var myJson = {
+            "data": client
+        };
+        console.log(myJson);
+        return res.json(myJson);
+    }).catch(function (err) {
+        var myJson = {
+            "data": err.message
+        };
+        return res.json(myJson);
+    });
+}
+
 function deleteUser(req, res) {
     User.destroy({
-        where:{
+        where: {
             id: req.body.id
         }
     }).then(function () {
         return res.json({errore: false});
     }).catch(function (err) {
-        return res.json({errore: false});
+        return res.json({errore: true});
     });
 }
 
-
+function deleteClient(req, res) {
+    OAuthClient.destroy({
+        where: {
+            id: req.body.id
+        }
+    }).then(function () {
+        return res.json({errore: false});
+    }).catch(function (err) {
+        return res.json({errore: true});
+    });
+}
 
 function updateUser(req, res) {
     User.update({
-        username: req.body.username,
-        password: req.body.password,
-        client: req.body.client,
-        type: {
-            organization: req.body.type.organization,
-            role: req.body.type.role
-        }
-    },
+            username: req.body.username,
+            password: req.body.password,
+            client: req.body.client,
+            type: {
+                organization: req.body.type.organization,
+                role: req.body.type.role
+            }
+        },
         {
             where: {
                 id: req.body.id
-             }
-        }).then(function (user){
-            return res.json({errore: false});
-        }).catch(function (err) {
-            return res.json({errore: false});
+            }
+        }).then(function (user) {
+        return res.json({errore: false});
+    }).catch(function (err) {
+        return res.json({errore: true});
     });
 }
+
+function updateClient(req, res) {
+    arrayGrants = [];
+    var arr = 0;
+    var dim = 0;
+    if (Array.isArray(req.body.grant_types)) {
+        dim = req.body.grant_types.length;
+        for (var i = 0; i < dim; i++) {
+            if (req.body.grant_types[i] === 'password')
+                arrayGrants[arr] = 'password';
+            if (req.body.grant_types[i] === 'authorization_code')
+                arrayGrants[arr] = 'authorization_code';
+            if (req.body.grant_types[i] === 'refresh_token')
+                arrayGrants[arr] = 'refresh_token';
+            if (req.body.grant_types[i] === 'client_credentials')
+                arrayGrants[arr] = 'client_credentials';
+            arr = arr + 1;
+        }
+    }
+    else {
+        arrayGrants[0] = req.body.grant_types;
+    }
+    OAuthClient.update({
+            client_id: req.body.client_id,
+            client_secret: req.body.client_secret,
+            redirect_uri: req.body.redirect_uri,
+            grant_types: arrayGrants
+        },
+        {
+            where: {
+                id: req.body.id
+            }
+        }).then(function (client) {
+        return res.json({errore: false});
+    }).catch(function (err) {
+        return res.json({errore: true});
+    });
+}
+
+function addNewUser(req, res) {
+    return User.findOrCreate({
+        where: {
+            username: req.body.materialFormRegisterUsername,
+            password: req.body.materialFormRegisterPassword,
+            scope: req.body.materialFormScope,
+            type: {
+                organization: req.body.materialFormRegisterOrganization,
+                role: req.body.materialFormRegisterRole
+            }
+        }
+    }).spread((user, created) => {
+        console.log(user.get({
+            plain: true
+        }));
+        console.log(created);
+        if (created)
+            res.redirect(req.headers.referer + '&esito=true');
+        else
+            res.redirect(req.headers.referer + '&esito=false');
+    })
+        .catch(function (err) {
+            res.redirect(req.headers.referer + '&esito=false');
+        });
+}
+
+function addNewClient(req, res, user) {
+    arrayGrants = [];
+    var arr = 0;
+    var dim = 0;
+    if (Array.isArray(req.body.grant_types)) {
+        dim = req.body.grant_types.length;
+        for (var i = 0; i < dim; i++) {
+            if (req.body.grant_types[i] === 'password')
+                arrayGrants[arr] = 'password';
+            if (req.body.grant_types[i] === 'authorization_code')
+                arrayGrants[arr] = 'authorization_code';
+            if (req.body.grant_types[i] === 'refresh_token')
+                arrayGrants[arr] = 'refresh_token';
+            if (req.body.grant_types[i] === 'client_credentials')
+                arrayGrants[arr] = 'client_credentials';
+            arr = arr + 1;
+        }
+    }
+    else {
+        arrayGrants[0] = req.body.grant_types;
+    }
+    return OAuthClient.findOrCreate({
+        where: {
+            client_id: req.body.client_id,
+            client_secret: req.body.client_secret,
+            redirect_uri: req.body.redirect_uri,
+            grant_types: arrayGrants,
+        }
+    }).spread((oauthclient, created) => {
+        console.log(oauthclient.get({
+            plain: true
+        }));
+        console.log(created);
+        if (created)
+            return res.json({errore: false});
+        else
+            return res.json({errore: true});
+    }).catch(function (err) {
+        return res.json({errore: true});
+    });
+}
+
 
 module.exports = {
     //generateOAuthAccessToken, optional - used for jwt
@@ -384,6 +511,11 @@ module.exports = {
     getUsersInformations: getUsersInformations,
     addNewUser: addNewUser,
     deleteUser: deleteUser,
-    updateUser: updateUser
+    updateUser: updateUser,
+    addNewClient: addNewClient,
+    getClientInformations: getClientInformations,
+    updateClient: updateClient,
+    deleteClient: deleteClient,
+    filterUsersByID: filterUsersByID
 }
 

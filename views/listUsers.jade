@@ -31,11 +31,6 @@ block content
                                             i.fa.fa-lock.prefix.grey-text.mr-2
                                             label(data-error='wrong', data-success='right', for='password') Password
                                             input#password.form-control.validate(type='password')
-                                    .col
-                                        .form.mb-5
-                                            i.fa.fa-desktop.prefix.grey-text.mr-2
-                                            label(for='client') Client
-                                            input#client.form-control.validate(type='text')
                                 .row
                                     .col
                                         .form.mb-5
@@ -72,7 +67,6 @@ block content
                                     th
                                     th Username
                                     th Password
-                                    th Client
                                     th Organizzazione
                                     th Ruolo
                             tfoot
@@ -80,7 +74,6 @@ block content
                                     th
                                     th Username
                                     th Password
-                                    th Client
                                     th Organizzazione
                                     th Ruolo
 
@@ -111,7 +104,6 @@ block javascript
             "id": undefined,
             "username": undefined,
             "password": undefined,
-            "client": undefined,
             "type": {
                 "organization": undefined,
                 "role": undefined
@@ -133,7 +125,6 @@ block javascript
                     },
                     {"data": "username"},
                     {"data": "password"},
-                    {"data": "client"},
                     {"data": "type.organization"},
                     {"data": "type.role"}
                 ],
@@ -191,7 +182,7 @@ block javascript
             });
 
             arrayUtenti = ids1;
-            arrayUtenti.action = 'aggiorna'
+            arrayUtenti.action = 'aggiorna';
 
             $("#modificaUtenteModal").on("show", function () {
                 $("#modificaUtenteModal a.btn").on("click", function (e) {
@@ -215,7 +206,6 @@ block javascript
 
             $('#username').val(arrayUtenti[0].username);
             $('#password').val(arrayUtenti[0].password);
-            $('#client').val(arrayUtenti[0].client);
             $('#organizzazione').val(arrayUtenti[0].type.organization);
             $('#ruolo').val(arrayUtenti[0].type.role);
         }
@@ -253,7 +243,6 @@ block javascript
             datiUtente.id = arrayUtenti[0].id;
             datiUtente.username = $('#username').val();
             datiUtente.password = $('#password').val();
-            datiUtente.client = $('#client').val();
             datiUtente.type.role = $('#ruolo').val();
             datiUtente.type.organization = $('#organizzazione').val();
             datiUtente.action = 'aggiorna';
@@ -284,7 +273,6 @@ block javascript
 
             datiUtente.username = $('#nome2').val();
             datiUtente.password = $('#cognome2').val();
-            datiUtente.client = $('#specializzazione2').val();
             datiUtente.type.organization = $('#provincia2').val();
             datiUtente.type.role = $('#mail2').val();
 

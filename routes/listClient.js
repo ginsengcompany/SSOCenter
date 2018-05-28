@@ -25,19 +25,21 @@ router.post('/', function (req, res) {
             }
         } else if (req.body.action === "aggiorna") {
             return oauthMongo.updateClient(req, res)
-        }
-    } else {
+        }else if (req.body.action === "aggiungi")
+            return oauthMongo.addNewClient(req, res)
+    } else{
         if (req.body.action === "elimina") {
             if (req.body.id) {
                 return oauthSql.deleteClient(req, res);
             } else {
                 res.redirect('listClient')
             }
-        } else if (req.body.action === "aggiorna") {
+        }else if (req.body.action === "aggiorna") {
             return oauthSql.updateClient(req, res)
+        }else if
+            (req.body.action === "aggiungi")
+            return oauthSql.addNewClient(req,res);
         }
-    }
-
 });
 
 module.exports = router;

@@ -242,36 +242,6 @@ function verifyScope(token, scope) {
     return token.scope === scope
 }
 
-function addNewUser(req, res) {
-    return User.findOne({
-        username: req.body.materialFormRegisterUsername,
-        password: req.body.materialFormRegisterPassword,
-        client: req.body.materialFormRegisterClient,
-        type: {
-            organization: req.body.materialFormRegisterOrganization,
-            role: req.body.materialFormRegisterRole
-        }
-    }).then(function (user) {
-        if (!user) {
-            User.create({
-                username: req.body.materialFormRegisterUsername,
-                password: req.body.materialFormRegisterPassword,
-                client: req.body.materialFormRegisterClient,
-                type: {
-                    organization: req.body.materialFormRegisterOrganization,
-                    role: req.body.materialFormRegisterRole
-                }
-            });
-            res.redirect(req.headers.referer + '&esito=true');
-        }
-        else
-            res.redirect(req.headers.referer + '&esito=false');
-    }).catch(function (err) {
-        //console.log("saveAuthorizationCode - Err: ", err)
-        res.redirect(req.headers.referer + '&esito=false');
-    });
-}
-
 function login(req, res) {
     User.findOne({username: req.body.username, password: req.body.password}, function (err, user) {
         if (user) {
@@ -335,7 +305,7 @@ function deleteUser(req, res) {
         if (!err) {
             return res.json({errore: false});
         } else
-            return res.json({errore: false});
+            return res.json({errore: true});
     });
 }
 
@@ -344,7 +314,7 @@ function deleteClient(req, res) {
         if (!err) {
             return res.json({errore: false});
         } else
-            return res.json({errore: false});
+            return res.json({errore: true});
     });
 }
 
@@ -364,11 +334,31 @@ function updateUser(req, res) {
             if (!err) {
                 return res.json({errore: false});
             } else
-                return res.json({errore: false});
+                return res.json({errore: true});
         });
 }
 
 function updateClient(req, res) {
+    arrayGrants = [];
+    var arr = 0;
+    var dim = 0;
+    if (Array.isArray(req.body.grant_types)) {
+        dim = req.body.grant_types.length;
+        for (var i = 0; i < dim; i++) {
+            if (req.body.grant_types[i] === 'password')
+                arrayGrants[arr] = 'password';
+            if (req.body.grant_types[i] === 'authorization_code')
+                arrayGrants[arr] = 'authorization_code';
+            if (req.body.grant_types[i] === 'refresh_token')
+                arrayGrants[arr] = 'refresh_token';
+            if (req.body.grant_types[i] === 'client_credentials')
+                arrayGrants[arr] = 'client_credentials';
+            arr = arr + 1;
+        }
+    }
+    else {
+        arrayGrants[0] = req.body.grant_types;
+    }
     OAuthClient.findOneAndUpdate({_id: req.body._id},
         {
             $set: {
@@ -380,47 +370,84 @@ function updateClient(req, res) {
         }, {new: true}, function (err, doc) {
             if (!err) {
                 return res.json({errore: false});
-             } else
-                return res.json({errore: false});
+            } else
+                return res.json({errore: true});
         });
 }
 
+function addNewUser(req, res) {
+    return User.findOne({
+        username: req.body.materialFormRegisterUsername,
+        password: req.body.materialFormRegisterPassword,
+        scope : req.body.materialFormScope,
+        client: req.body.materialFormRegisterClient,
+        type: {
+            organization: req.body.materialFormRegisterOrganization,
+            role: req.body.materialFormRegisterRole
+        }
+    }).then(function (user) {
+        if (!user) {
+            User.create({
+                username: req.body.materialFormRegisterUsername,
+                password: req.body.materialFormRegisterPassword,
+                client: req.body.materialFormRegisterClient,
+                type: {
+                    organization: req.body.materialFormRegisterOrganization,
+                    role: req.body.materialFormRegisterRole
+                }
+            });
+            res.redirect(req.headers.referer + '&esito=true');
+        }
+        else
+            res.redirect(req.headers.referer + '&esito=false');
+    }).catch(function (err) {
+        //console.log("saveAuthorizationCode - Err: ", err)
+        res.redirect(req.headers.referer + '&esito=false');
+    });
+}
 
 function addNewClient(req, res) {
     arrayGrants = [];
+    var arr = 0;
+    var dim = 0;
+    if (Array.isArray(req.body.materialGrantTypes)) {
+        dim = req.body.materialGrantTypes.length;
+        for (var i = 0; i < dim; i++) {
+            if (req.body.materialGrantTypes[i] === 'password')
+                arrayGrants[arr] = 'password';
+            if (req.body.materialGrantTypes[i] === 'authorization_code')
+                arrayGrants[arr] = 'authorization_code';
+            if (req.body.materialGrantTypes[i] === 'refresh_token')
+                arrayGrants[arr] = 'refresh_token';
+            if (req.body.materialGrantTypes[i] === 'client_credentials')
+                arrayGrants[arr] = 'client_credentials';
+            arr = arr + 1;
+        }
+    }
+    else {
+        arrayGrants[0] = req.body.materialGrantTypes;
+    }
     return OAuthClient.findOne({
         client_id: req.body.materialFormClientId,
         client_secret: req.body.materialFormClientSecret,
-        redirect_uri: req.body.materialRedirectUri
-    })
-        .then(function (client) {
-            if (!client) {
-                var arr = 0;
-                for (var i = 0; i < req.body.materialGrantTypes.length; i++) {
-                    if (req.body.materialGrantTypes[i] === 'password')
-                        arrayGrants[arr] = 'password';
-                    if (req.body.materialGrantTypes[i] === 'authorization_code')
-                        arrayGrants[arr] = 'authorization_code';
-                    if (req.body.materialGrantTypes[i] === 'refresh_token')
-                        arrayGrants[arr] = 'refresh_token';
-                    if (req.body.materialGrantTypes[i] === 'client_credentials')
-                        arrayGrants[arr] = 'client_credentials';
-                    arr = arr + 1;
-                }
-                OAuthClient.create({
-                    client_id: req.body.materialFormClientId,
-                    client_secret: req.body.materialFormClientSecret,
-                    redirect_uri: req.body.materialRedirectUri,
-                    grant_types: arrayGrants
-                });
-                res.redirect(req.headers.referer + '&esito=true');
-            }
-            else
-                res.redirect(req.headers.referer + '&esito=false');
-        }).catch(function (err) {
-            //console.log("saveAuthorizationCode - Err: ", err)
+        redirect_uri: req.body.materialRedirectUri,
+        grant_types: arrayGrants
+    }).then(function (client) {
+        if (!client) {
+            OAuthClient.create({
+                client_id: req.body.materialFormClientId,
+                client_secret: req.body.materialFormClientSecret,
+                redirect_uri: req.body.materialRedirectUri,
+                grant_types: arrayGrants
+            });
+            res.redirect(req.headers.referer + '&esito=true');
+        }
+        else
             res.redirect(req.headers.referer + '&esito=false');
-        });
+    }).catch(function (err) {
+        //console.log("saveAuthorizationCode - Err: ", err)
+        res.redirect(req.headers.referer + '&esito=false');
+    });
 }
 
 

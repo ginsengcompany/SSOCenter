@@ -15,20 +15,18 @@ module.exports = function (sequelize, DataTypes) {
         username: DataTypes.STRING(32),
         password: DataTypes.STRING(32),
         scope: DataTypes.STRING(255),
-        client: DataTypes.STRING(255),
+        client_id: DataTypes.INTEGER,
         type: DataTypes.JSONB
     }, {
         tableName: 'users', // oauth_users
         timestamps: false,
         underscored: true,
-
-        classMethods: {
-            associate: function associate(models) {
-                //User.hasMany(models.OAuthClient);
-            },
-        },
     });
-
+        User.associate = function associate(models) {
+        User.belongsTo(models.OAuthClient, {
+            foreignKey: 'client_id',
+        });
+    };
     return User;
-}
+};
 

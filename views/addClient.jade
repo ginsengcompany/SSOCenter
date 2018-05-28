@@ -4,6 +4,8 @@ block title
     title EasySO - SSO - Add User
         //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
 block style
+    link(rel='stylesheet', href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+    link(rel='stylesheet', href='https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
     link(rel='stylesheet', href='/css/bootstrap.min.css')
     link(rel='stylesheet', href='/css/mdb.min.css')
@@ -21,48 +23,44 @@ block content
                 #myAlert.alert.alert-dismissible
                     a.close(href='#{addClientUrl}') ×
                     strong#testo Inserimento Eseguito con Successo!
-            .col
-            .col
+            .col.table-responsive
+                table#tableClient.display.nowrap(cellspacing='0', width='100%')
+                    thead
+                        tr
+                            th
+                            th Client ID
+                    tfoot
+                        tr
+                            th
+                            th Client ID
+            .col.table-responsive
+                table#example.display.nowrap(cellspacing='0', width='100%', hidden=true)
+                    thead
+                        tr
+                            th
+                            th Username
+                    tfoot
+                        tr
+                            th
+                            th Username
+
                 // Material form register
-                form#userRegister(method='post', action='/addClient')
-                    .md-form
-                        i.fa.fa-id-card.prefix.grey-text
-                        input#materialFormClientId.form-control(type='text', name='materialFormClientId', required='', disabled='false')
-                        label(for='materialFormClientId') Client ID
-                    .md-form
-                        i.fa.fa-user-secret.prefix.grey-text
-                        input#materialFormClientSecret.form-control(type='text', name='materialFormClientSecret', required='', disabled='false')
-                        label(for='materialFormClientSecret') Client Secret
-                    .md-form
-                        i.fa.fa-windows.prefix.grey-text
-                        input#materialRedirectUri.form-control(type='text', name='materialRedirectUri', required='', disabled='false')
-                        label(for='materialRedirectUri') Redirect URI
-                    .md-form
-                        select#materialGrantTypes.mdb-select.colorful-select.dropdown-primary(multiple='', name='materialGrantTypes', required='')
-                            option(value='', disabled='', selected='') Seleziona
-                            option(value='password') password
-                            option(value='authorization_code') authorization code
-                            option(value='refresh_token') refresh token
-                            option(value='client_credentials') client credentials
-                        label Modalità accesso
-                        //button.btn-save.btn.btn-primary.btn-sm Save
-                    // Material input password
-                    // TO DO: Mancherebbe lo scope
-                    .text-center.mt-4
-                        button#btnSubmit.btn.btn-primary(type='submit', disabled='false') Register
-                // Material form register
-            .col
 block javascript
     // SCRIPTS
     // JQuery
     script(type='text/javascript', src='/js/jquery-3.2.1.min.js')
     // Datatables
+    script(type='text/javascript', src='/js/dataTables.min.js')
+    script(type='text/javascript', src='https://cdn.datatables.net/select/1.2.5/js/dataTables.select.min.js')
     // Tooltips
     script(type='text/javascript', src='/js/popper.min.js')
     // Bootstrap core JavaScript
     script(type='text/javascript', src='/js/bootstrap.min.js')
+    // Formatting function DataTablesMin
+    script(type='text/javascript', src='/js/dataTableResMin.js')
     // MDB core JavaScript
     script(type='text/javascript', src='/js/mdb.min.js')
+
     script.
         $(".button-collapse").sideNav();
     script.
@@ -70,7 +68,190 @@ block javascript
             $('.mdb-select').material_select();
         });
     script.
+
+        var arrayUtenti = {};
+        datiUtente = {
+            "userId": [],
+            "client_Id": undefined,
+            "client_Secret": undefined,
+            "redirect_uri": undefined
+        }
+
         $(document).ready(function () {
+            tableClient = $('#tableClient').DataTable({
+                ajax: "/getCLient",
+                ajaxSettings: {
+                    method: "GET",
+                    cache: false
+                },
+                columns: [
+                    {
+                        "data": null,
+                        "defaultContent": ""
+                    },
+                    {"data": "client_id"}
+                ],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                select: {
+                    style: 'single'
+                },
+                columnDefs: [{
+                    className: 'control',
+                    orderable: false,
+                    targets: 0
+                }],
+                order: [1, 'asc']
+            });
+            table = $('#example').DataTable({
+                columns: [
+                    {
+                        "data": null,
+                        "defaultContent": ""
+                    },
+                    {"data": "username"}
+                ],
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                select: {
+                    style: 'single'
+                },
+                columnDefs: [{
+                    className: 'control',
+                    orderable: false,
+                    targets: 0
+                }],
+                order: [1, 'asc']
+            });
+            $('#example').parents('div.dataTables_wrapper').first().hide();
+            $('#example tbody').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+            });
+
+            $('#tableClient tbody').on('click','tr', function () {
+                clientId = tableClient.row(this).data();
+                $.ajax({
+                    url: '/getUsers',
+                    type: 'POST',
+                    data: JSON.stringify(clientId),
+                    cache: false,
+                    contentType: 'application/json',
+                    success: function (data) {
+                        if (clientId !== null) {
+                            console.log(clientId)
+                            $('#example').parents('div.dataTables_wrapper').first().show();
+                            $('#example').prop('hidden', false);
+                            table.clear();
+                            table.rows.add(data.data);
+                            table.draw();
+                            //$('#example').prop('hidden', false);
+                            //table = $('#example').DataTable({
+                            //    columns: [
+                            //        {
+                            //            "data": null,
+                            //            "defaultContent": ""
+                            //        },
+                            //        {"data": "username"}
+                            //    ],
+                            //    responsive: {
+                            //        details: {
+                            //            type: 'column',
+                            //            target: 'tr'
+                            //        }
+                            //    },
+                            //    columnDefs: [{
+                            //        className: 'control',
+                            //        orderable: false,
+                            //        targets: 0
+                            //    }],
+                            //    order: [1, 'asc']
+                            //});
+                            //$('#example tbody').on('click', 'tr', function () {
+                            //    $(this).toggleClass('selected');
+                            //});
+                        }
+                    },
+                    faliure: function (data) {
+                    }
+                })
+            });
+        });
+
+        //table = $('#example').DataTable({
+        //    ajax: "/getUsers",
+        //    ajaxSettings: {
+        //        method: "GET",
+        //        cache: false
+        //    },
+        //    columns: [
+        //        {
+        //            "data": null,
+        //            "defaultContent": ""
+        //        },
+        //        {"data": "username"}
+        //    ],
+        //    responsive: {
+        //        details: {
+        //            type: 'column',
+        //            target: 'tr'
+        //        }
+        //    },
+        //    columnDefs: [{
+        //        className: 'control',
+        //        orderable: false,
+        //        targets: 0
+        //    }],
+        //    order: [1, 'asc']
+        //});
+        //$('#example tbody').on('click', 'tr', function () {
+        //    $(this).toggleClass('selected');
+        //});
+
+
+    script.
+        function inviaDati() {
+            let ids1 = $.map(table.rows('.selected').data(), function (item) {
+                return item;
+            });
+            arrayUtenti = ids1;
+            datiUtente.client_Id = $('#materialFormClientId').val();
+            datiUtente.client_Secret = $('#materialFormClientSecret').val();
+            datiUtente.redirect_uri = $('#materialRedirectUri').val();
+            $.each(arrayUtenti, function (i) {
+                datiUtente.userId[i] = arrayUtenti[i].id;
+            });
+            $.ajax({
+                url: '/addClient',
+                type: 'POST',
+                data: JSON.stringify(datiUtente),
+                cache: false,
+                contentType: 'application/json'
+            });
+            console.log(datiUtente);
+        }
+
+    script.
+        $(document).ready(function () {
+            //$.get("/getUsers", function (data) {
+            //    var arrayUser = data.data;
+            //    console.log(arrayUser);
+            //    var materialUserAddID = document.getElementById('materialUserAdd');
+            //    $.each(arrayUser, function (i) {
+            //        var option = document.createElement("option");
+            //        option.text = arrayUser[i].username;
+            //        option.value = arrayUser[i].id
+            //        materialUserAddID.add(option);
+            //    });
+            //    console.log(materialUserAddID);
+            //});
             var url_string = window.location.href;
             var url = new URL(url_string);
             var c = url.searchParams.get("esito");
@@ -87,7 +268,7 @@ block javascript
                     });
                 } else {
                     $("#myAlert").addClass("alert-danger");
-                    $("#testo").text('Errore di inserimento: utente già presente!');
+                    $("#testo").text('Errore di inserimento: client già presente!');
                     $('#materialFormClientId').prop('disabled', false);
                     $('#materialFormClientSecret').prop('disabled', false);
                     $('#materialRedirectUri').prop('disabled', false);
