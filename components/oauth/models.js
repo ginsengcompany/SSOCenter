@@ -302,19 +302,50 @@ function getUsersInformations(req, res) {
 
 
 function filterUsersByID(req, res) {
-    User.findAll({
+    OAuthClient.findAll({
         where: {
-            client_id: {
-                $or: {
-                    $ne: req.body.id,
-                    $eq: null
-                }
+            id: req.body.id
+        },
+        attributes: ['client_id'],
+        include: [{
+            model: User, as: 'Utenti',
+            attributes: ['id', 'username'],
+            through: {
+                attributes: ['client_id', 'user_id'],
             }
-    }}).then(function (users) {
-        var myJson = {
-            "data": users
-        };
-        return res.json(myJson);
+        }]
+    }).then(client => {
+        var arrayUtenti = [];
+        client[0].Utenti.forEach(el => {
+            arrayUtenti.push(el.id);
+        });
+        console.log(arrayUtenti);
+        //console.log(client);
+        //var myJson = {
+        //    "data": users[0].Utenti
+        //};
+        //console.log(users);
+        //return res.json(myJson);
+        var option = '';
+        if(arrayUtenti.length !== 0) {
+            option = {
+                where: {
+                    id: {
+                        $notIn: arrayUtenti
+                    }
+                },
+                attributes: ['id', 'username']
+            }
+        }else
+            option = {};
+        User.findAll(
+            option
+        ).then(utenti => {
+            var myJson = {
+                "data": utenti
+            };
+            return res.json(myJson);
+            })
     }).catch(function (err) {
         var myJson = {
             "data": err.message
@@ -322,13 +353,70 @@ function filterUsersByID(req, res) {
         return res.json(myJson);
     });
 }
+
+//User.findAll({
+//    //attributes: ['client_id'],
+//    where: {
+//        id: {
+//            $or: {
+//                $ne: req.body.id,
+//                $eq: null
+//            }
+//        }
+//    },
+//    include: [
+//        {
+//            model: OAuthClient
+//        }
+//    ],
+//    //through: {
+//    //    attributes: ['client_id', 'user_id'],
+//    //}
+//}).then(function (users) {
+//    //console.log(users);
+//    var myJson = {
+//        "data": users
+//    };
+//    return res.json(myJson);
+//}).catch(function (err) {
+//    var myJson = {
+//        "data": err.message
+//    };
+//    return res.json(myJson);
+//});
+//User.create({
+//    username: "prova",
+//    password: "admin",
+//    type: {"role": "admin", "organization":"admin"}
+//}).then(user => {
+//    let users = [user];
+//})
+
+//var utente = "";
+//User.find({
+//    where: {id: "1"}
+//}).then(user =>{
+//    utente = user;
+//});
+//OAuthClient.create({
+//    client_id: 'prova',
+//    client_secret: 'prova_secret',
+//    redirect_uri: "http://",
+//    grant_types: ["password"]
+//}).then(client => {
+//    users = {
+//        username:"prova",
+//        password:"admin",
+//        type: {"role": "admin", "organization":"admin"}
+//    };
+//    client.setUtenti(utente);
+//})
 
 function getClientInformations(req, res) {
     OAuthClient.findAll({}).then(function (client) {
         var myJson = {
             "data": client
         };
-        console.log(myJson);
         return res.json(myJson);
     }).catch(function (err) {
         var myJson = {
@@ -338,14 +426,15 @@ function getClientInformations(req, res) {
     });
 }
 
-function deleteUser(req, res) {
+function deleteUser(id, res) {
+    console.log(id);
     User.destroy({
         where: {
-            id: req.body.id
+            id: id,
         }
     }).then(function () {
         return res.json({errore: false});
-    }).catch(function (err) {
+    }).catch(function () {
         return res.json({errore: true});
     });
 }

@@ -14,7 +14,9 @@ var getUsers = require('./routes/getUsers');
 var getClient = require('./routes/getClient');
 var listClient = require('./routes/listClient');
 var addClient = require('./routes/addClient');
+var deleteUser = require('./routes/listUsers');
 var administrationPanel = require('./routes/administrationPanel');
+var db = require('./components/oauth/sqldb/index');
 
 var app = express();
 
@@ -33,6 +35,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 if (config.seedDB) { require('./components/oauth/seed'); }
 if (config.seedMongoDB) { require('./components/oauth/seed-mongo'); }
 
+db.sequelize.sync({force: false}).then(() => {
+    console.log('Drop and Resync with { force: true }');
+});
+
 /** Public Area **/
 
 require('./components/oauth')(app)
@@ -48,6 +54,7 @@ app.use('/getUsers',getUsers);
 app.use('/getClient',getClient);
 app.use('/listClient',listClient);
 app.use('/addClient',addClient);
+app.use('/deleteUser',deleteUser);
 
 app.get('/secure', authenticate(), function(req,res){
   res.json({message: 'Secure data'})

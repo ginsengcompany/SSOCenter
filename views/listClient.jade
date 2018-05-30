@@ -349,9 +349,11 @@ block javascript
                 cache: false,
                 contentType: 'application/json',
                 success: function (data) {
-                        $("#aggiungiClientModal").modal('hide');
-                        table.ajax.reload();
-                    }
+                    $("#aggiungiClientModal").modal('hide');
+                    table.ajax.reload();
+                    $('#modificaClient').prop('disabled', true);
+                    $('#eliminaClient').prop('disabled', true);
+                }
             });
         }
 

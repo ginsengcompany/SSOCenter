@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var url = require('url');
 var authenticate = require('../components/oauth/authenticate');
 var oauthMongo = require('../components/oauth/mongo-models');
 var oauthSql = require('../components/oauth/models');
@@ -16,28 +17,21 @@ router.get('/', authenticate(), function (req, res, next) {
 });
 
 router.post('/', function (req, res) {
-    if(configDB.db === 'mongo') {
-        if (req.body.action === "elimina") {
-            if (req.body._id) {
-                return oauthMongo.deleteUser(req, res);
-            } else {
-                res.redirect('listUsers')
-            }
-        } else if (req.body.action === "aggiorna") {
-            return oauthMongo.updateUser(req, res)
-        }
-    } else {
-        if (req.body.action === "elimina") {
-            if (req.body.id) {
-                return oauthSql.deleteUser(req, res);
-            } else {
-                res.redirect('listUsers')
-            }
-        } else if (req.body.action === "aggiorna") {
-            return oauthSql.updateUser(req, res)
-        }
+    if (configDB.db === 'mongo') {
+        return oauthMongo.updateUser(req, res);
     }
+    else {
+        return oauthSql.updateUser(req, res);
+    }
+});
 
+router.delete('/:id', function (req, res) {
+    var id = req.params.id;
+    if (configDB.db === 'mongo') {
+        return oauthMongo.deleteUser(id, res);
+    } else {
+        return oauthSql.deleteUser(id, res);
+    }
 });
 
 module.exports = router;

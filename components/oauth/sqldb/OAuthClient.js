@@ -18,16 +18,10 @@ module.exports = function AppModel(sequelize, DataTypes) {
         redirect_uri: DataTypes.STRING(2000),
         grant_types: DataTypes.JSONB,
         scope: DataTypes.STRING,
-        user_id: DataTypes.INTEGER
     }, {
         tableName: 'oauth_clients',
         timestamps: false,
         underscored: true,
     });
-    OAuthClient.associate = function associate(models) {
-                OAuthClient.belongsTo(models.User, {
-                    foreignKey: 'user_id',
-                });
-    };
-  return OAuthClient;
+    return OAuthClient;
 };

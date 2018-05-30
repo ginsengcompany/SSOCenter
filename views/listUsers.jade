@@ -108,7 +108,6 @@ block javascript
                 "organization": undefined,
                 "role": undefined
             },
-            "action" : undefined
         }
 
         $(document).ready(function () {
@@ -182,7 +181,6 @@ block javascript
             });
 
             arrayUtenti = ids1;
-            arrayUtenti.action = 'aggiorna';
 
             $("#modificaUtenteModal").on("show", function () {
                 $("#modificaUtenteModal a.btn").on("click", function (e) {
@@ -203,7 +201,6 @@ block javascript
                 "keyboard": true,
                 "show": true
             });
-
             $('#username').val(arrayUtenti[0].username);
             $('#password').val(arrayUtenti[0].password);
             $('#organizzazione').val(arrayUtenti[0].type.organization);
@@ -214,16 +211,19 @@ block javascript
             let ids1 = $.map(table.rows('.selected').data(), function (item) {
                 return item;
             });
-
             arrayUtenti = ids1;
             ids1[0].action = "elimina";
+            var identificativo = '';
+            if(ids1[0]._id === undefined){
+                identificativo = JSON.stringify(ids1[0].id);
+            }else {
+                identificativo = JSON.stringify(ids1[0]._id);
+            }
+            console.log(identificativo);
 
             $.ajax({
-                url: '/listUsers',
-                type: 'POST',
-                data: JSON.stringify(ids1[0]),
-                cache: false,
-                contentType: 'application/json',
+                url: '/deleteUser/' + identificativo,
+                type: 'DELETE',
                 success: function (data) {
 
                     if (data.errore === false) {
@@ -238,14 +238,12 @@ block javascript
         }
 
         function updateUtente() {
-
             datiUtente._id = arrayUtenti[0]._id;
             datiUtente.id = arrayUtenti[0].id;
             datiUtente.username = $('#username').val();
             datiUtente.password = $('#password').val();
             datiUtente.type.role = $('#ruolo').val();
             datiUtente.type.organization = $('#organizzazione').val();
-            datiUtente.action = 'aggiorna';
 
             $.ajax({
                 url: '/listUsers',
@@ -268,136 +266,3 @@ block javascript
             });
 
         }
-
-        function AddUtente() {
-
-            datiUtente.username = $('#nome2').val();
-            datiUtente.password = $('#cognome2').val();
-            datiUtente.type.organization = $('#provincia2').val();
-            datiUtente.type.role = $('#mail2').val();
-
-            $.ajax({
-                url: '/listUsers',
-                type: 'POST',
-                data: JSON.stringify(datiUtente),
-                cache: false,
-                contentType: 'application/json',
-                success: function (data) {
-
-                    if (data !== false) {
-                        $("#myModal2").modal('hide');
-                        $('#modificaUtente').prop('disabled', true);
-                        $('#eliminaUtente').prop('disabled', true);
-                        table.ajax.reload();
-
-                        $('#nome2').val('');
-                        $('#cognome2').val('');
-                        $('#specializzazione2').val('');
-                        $('#provincia2').val('');
-                        $('#mail2').val('');
-                        $('#username2').val('');
-                        $('#password2').val('');
-                        $('#telefono2').val('');
-                        $('#pec2').val('');
-                        $('#interessi2').val('');
-                    }
-
-
-                    if (data === false) {
-
-                        $("#myModal5").on("show", function () {
-                            $("#myModal5 a.btn").on("click", function (e) {
-                                console.log("button pressed");
-                                $("#myModal5").modal('hide');
-                            });
-                        });
-                        $("#myModal5").on("hide", function () {
-                            $("#myModal5 a.btn").off("click");
-                        });
-
-                        $("#myModal5").on("hidden", function () {
-                            $("#myModal5").remove();
-                        });
-
-                        $("#myModal5").modal({
-                            "backdrop": "static",
-                            "keyboard": true,
-                            "show": true
-                        });
-
-                    }
-
-                },
-                faliure: function (data) {
-                    $("#myModal3").on("show", function () {
-                        $("#myModal3 a.btn").on("click", function (e) {
-                            console.log("button pressed");
-                            $("#myModal3").modal('hide');
-                        });
-                    });
-                    $("#myModal3").on("hide", function () {
-                        $("#myModal3 a.btn").off("click");
-                    });
-
-                    $("#myModal3").on("hidden", function () {
-                        $("#myModal3").remove();
-                    });
-
-                    $("#myModal3").modal({
-                        "backdrop": "static",
-                        "keyboard": true,
-                        "show": true
-                    });
-                }
-            });
-        }
-
-        function openModal2() {
-
-            $("#myModal2").on("show", function () {
-                $("#myModal2 a.btn").on("click", function (e) {
-                    console.log("button pressed");
-                    $("#myModal2").modal('hide');
-                });
-            });
-            $("#myModal2").on("hide", function () {
-                $("#myModal2 a.btn").off("click");
-            });
-
-            $("#myModal2").on("hidden", function () {
-                $("#myModal2").remove();
-            });
-
-            $("#myModal2").modal({
-                "backdrop": "static",
-                "keyboard": true,
-                "show": true
-            });
-
-        }
-
-        function openModalAdd() {
-
-            $("#myModal4").on("show", function () {
-                $("#myModal4 a.btn").on("click", function (e) {
-                    console.log("button pressed");
-                    $("#myModal4").modal('hide');
-                });
-            });
-            $("#myModal4").on("hide", function () {
-                $("#myModal4 a.btn").off("click");
-            });
-
-            $("#myModal4").on("hidden", function () {
-                $("#myModal4").remove();
-            });
-
-            $("#myModal4").modal({
-                "backdrop": "static",
-                "keyboard": true,
-                "show": true
-            });
-
-        }
-
-
