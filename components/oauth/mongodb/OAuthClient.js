@@ -12,7 +12,7 @@ var OAuthClientSchema = new Schema({
   redirect_uri: String,
   grant_types: [String],
   scope: String,
-  User:  { type : Schema.Types.ObjectId, ref: 'User' },
+  User:  [{ type : Schema.Types.ObjectId, ref: 'User' }],
 });
 
 module.exports = mongoose.model('OAuthClient', OAuthClientSchema);

@@ -17,9 +17,9 @@ router.get('/', authenticate(), function (req, res, next) {
 
 router.post('/', function (req, res) {
     if (configDB.db === 'mongo') {
-        oauthMongo.addNewClient(req, res);
+        //oauthMongo.addNewClient(req, res);
     } else {
-        oauthSql.addNewClient(req, res);
+        oauthSql.associaClientUser(req, res);
         }
 });
 

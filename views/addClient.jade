@@ -15,9 +15,9 @@ block content
         .row
             .col
                 blockquote.blockquote.bq-primary
-                    p.h4.bq-title Aggiungi Client
+                    p.h4.bq-title Associa Utente a Client
                     p
-                        | Inserisci le informazioni del nuovo Client da gestire col sistema Easy Sign On!
+                        | Associa uno o più Utenti ad un Client col sistema Easy Sign On!
         .row
             .container
                 #myAlert.alert.alert-dismissible
@@ -43,8 +43,9 @@ block content
                         tr
                             th
                             th Username
-
-                // Material form register
+        .row.m-3
+            button#associaUtenti.btn.btn-primary.btn-lg.btn-block(type='button', onclick='associaUtenti();') Associa
+            // Material form register
 block javascript
     // SCRIPTS
     // JQuery
@@ -68,8 +69,8 @@ block javascript
             $('.mdb-select').material_select();
         });
     script.
-
-        var arrayUtenti = {};
+        $('#associaUtenti').hide();
+        arrayUtenti = [];
         datiUtente = {
             "userId": [],
             "client_Id": undefined,
@@ -122,7 +123,7 @@ block javascript
                     }
                 },
                 select: {
-                    style: 'single'
+                    style: 'multi'
                 },
                 columnDefs: [{
                     className: 'control',
@@ -134,6 +135,12 @@ block javascript
             $('#example').parents('div.dataTables_wrapper').first().hide();
             $('#example tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
+                if (table.rows( '.selected' ).count()) {
+                    $('#associaUtenti').show();
+                    console.log(table.rows( '.selected' ).count());
+                }
+                else
+                    $('#associaUtenti').hide();
             });
 
             $('#tableClient tbody').on('click','tr', function () {
@@ -217,14 +224,12 @@ block javascript
 
 
     script.
-        function inviaDati() {
+        function associaUtenti() {
             let ids1 = $.map(table.rows('.selected').data(), function (item) {
                 return item;
             });
             arrayUtenti = ids1;
-            datiUtente.client_Id = $('#materialFormClientId').val();
-            datiUtente.client_Secret = $('#materialFormClientSecret').val();
-            datiUtente.redirect_uri = $('#materialRedirectUri').val();
+            datiUtente.client_Id = clientId;
             $.each(arrayUtenti, function (i) {
                 datiUtente.userId[i] = arrayUtenti[i].id;
             });

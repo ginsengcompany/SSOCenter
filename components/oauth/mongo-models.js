@@ -233,12 +233,10 @@ function getRefreshToken(refreshToken) {
 }
 
 function validateScope(token, client, scope) {
-    console.log("validateScope", token, client, scope);
-    return (user.scope === scope && client.scope === scope && scope !== null) ? scope : false
+    return (token.scope === scope && client.scope === scope && scope !== null) ? scope : false
 }
 
 function verifyScope(token, scope) {
-    console.log("verifyScope", token, scope);
     return token.scope === scope
 }
 
@@ -253,7 +251,12 @@ function login(req, res) {
                         'content-type': 'application/x-www-form-urlencoded',
                         'Authorization': 'Basic ZGVtb2NsaWVudDpkZW1vY2xpZW50c2VjcmV0'
                     },
-                    form: {grant_type: 'password', username: req.body.username, password: req.body.password},
+                    form: {
+                        grant_type: 'password',
+                        username: req.body.username,
+                        password: req.body.password,
+                        scope: 'admin'
+                    },
                     json: true
                 }, function (err, response, body) {
                     res.redirect(body.client.redirect_uri + "?access_token=" + body.access_token);
@@ -287,7 +290,25 @@ function getUsersInformations(req, res) {
             }
         }
         return res.json(myJson);
+    }).catch(function (err) {
+        var myJson = {
+            "data": err.message
+        };
+        return res.json(myJson);
     });
+}
+
+function filterUsersByID(req, res) {
+    OAuthClient.find({
+        _id: req.body._id
+    }).populate('User')
+        .then(client => {
+            var arrayUtenti = [];
+            client[0].User.forEach(el => {
+                arrayUtenti.push(el._doc._id);
+            });
+            console.log(arrayUtenti);
+        })
 }
 
 function getClientInformations(req, res) {
@@ -295,7 +316,11 @@ function getClientInformations(req, res) {
         var myJson = {
             "data": client
         };
-        console.log(myJson);
+        return res.json(myJson);
+    }).catch(function (err) {
+        var myJson = {
+            "data": err.message
+        };
         return res.json(myJson);
     });
 }
@@ -379,8 +404,7 @@ function addNewUser(req, res) {
     return User.findOne({
         username: req.body.materialFormRegisterUsername,
         password: req.body.materialFormRegisterPassword,
-        scope : req.body.materialFormScope,
-        client: req.body.materialFormRegisterClient,
+        scope: req.body.materialFormScope,
         type: {
             organization: req.body.materialFormRegisterOrganization,
             role: req.body.materialFormRegisterRole
@@ -390,7 +414,6 @@ function addNewUser(req, res) {
             User.create({
                 username: req.body.materialFormRegisterUsername,
                 password: req.body.materialFormRegisterPassword,
-                client: req.body.materialFormRegisterClient,
                 type: {
                     organization: req.body.materialFormRegisterOrganization,
                     role: req.body.materialFormRegisterRole
@@ -401,7 +424,6 @@ function addNewUser(req, res) {
         else
             res.redirect(req.headers.referer + '&esito=false');
     }).catch(function (err) {
-        //console.log("saveAuthorizationCode - Err: ", err)
         res.redirect(req.headers.referer + '&esito=false');
     });
 }
@@ -466,7 +488,7 @@ module.exports = {
     revokeToken: revokeToken,
     saveToken: saveToken,//saveOAuthAccessToken, renamed to
     saveAuthorizationCode: saveAuthorizationCode, //renamed saveOAuthAuthorizationCode,
-    //validateScope: validateScope,
+    validateScope: validateScope,
     verifyScope: verifyScope,
     addNewUser: addNewUser,
     login: login,
@@ -476,6 +498,7 @@ module.exports = {
     addNewClient: addNewClient,
     getClientInformations: getClientInformations,
     updateClient: updateClient,
-    deleteClient: deleteClient
+    deleteClient: deleteClient,
+    filterUsersByID: filterUsersByID
 }
 

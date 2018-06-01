@@ -13,7 +13,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function (req,res) {
-    oauthSql.filterUsersByID(req,res)
+    if(configDB.db === 'mongo') {
+        return oauthMongo.filterUsersByID(req, res);
+    }
+    else return oauthSql.filterUsersByID(req,res)
 });
 
 module.exports = router;

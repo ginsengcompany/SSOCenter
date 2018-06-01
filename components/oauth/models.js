@@ -238,7 +238,8 @@ function getRefreshToken(refreshToken) {
 }
 
 function validateScope(token, client, scope) {
-    return true; //(user.scope === scope && client.scope === scope && scope !== null) ? scope : false
+    //return true;
+    return (token.scope === scope && client.scope === scope && scope !== null) ? scope : false;
 }
 
 function verifyScope(token, scope) {
@@ -260,7 +261,7 @@ function login(req, res) {
                     'content-type': 'application/x-www-form-urlencoded',
                     'Authorization': 'Basic ZGVtb2NsaWVudDpkZW1vY2xpZW50c2VjcmV0'
                 },
-                form: {grant_type: 'password', username: userJson.username, password: userJson.password},
+                form: {grant_type: 'password', username: userJson.username, password: userJson.password, scope:'admin'},
                 json: true
             }, function (err, response, body) {
                 console.log(body);
@@ -354,6 +355,22 @@ function filterUsersByID(req, res) {
     });
 }
 
+function associaClientUser(req,res){
+    OAuthClient.findOne({
+        where: {
+            id: req.body.client_Id.id
+        }
+    }).then(client => {
+        User.findAll({
+            where: {
+                id: req.body.userId
+            }
+        }).then(users => {
+            client.addUtenti(users);
+        })
+    })
+}
+
 //User.findAll({
 //    //attributes: ['client_id'],
 //    where: {
@@ -427,7 +444,6 @@ function getClientInformations(req, res) {
 }
 
 function deleteUser(id, res) {
-    console.log(id);
     User.destroy({
         where: {
             id: id,
@@ -605,6 +621,7 @@ module.exports = {
     getClientInformations: getClientInformations,
     updateClient: updateClient,
     deleteClient: deleteClient,
-    filterUsersByID: filterUsersByID
+    filterUsersByID: filterUsersByID,
+    associaClientUser: associaClientUser
 }
 

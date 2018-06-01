@@ -350,9 +350,12 @@ block javascript
                 contentType: 'application/json',
                 success: function (data) {
                     $("#aggiungiClientModal").modal('hide');
-                    table.ajax.reload();
                     $('#modificaClient').prop('disabled', true);
                     $('#eliminaClient').prop('disabled', true);
+                    table.ajax.reload();
+                    $('#aggiungiClientID').val("");
+                    $('#aggiungiClientSecret').val("");
+                    $('#aggiungiRedirectUri').val("");
                 }
             });
         }
