@@ -1,7 +1,3 @@
-/**
- * Created by Manjesh on 14-05-2016.
- */
-
 var _ = require('lodash');
 var sqldb = require('./sqldb');
 var User = sqldb.User;
@@ -283,7 +279,15 @@ function login(req, res) {
 }
 
 function getUsersInformations(req, res) {
-    User.findAll({}).then(function (users) {
+    User.findAll({
+        include: [{
+            model: OAuthClient, as: 'Client',
+            attributes: ['client_id'],
+            through: {
+                attributes: ['client_id', 'user_id'],
+            }
+        }]
+    }).then(function (users) {
         var myJson = {
             "data": users
         };
@@ -320,7 +324,6 @@ function filterUsersByID(req, res) {
         client[0].Utenti.forEach(el => {
             arrayUtenti.push(el.id);
         });
-        console.log(arrayUtenti);
         //console.log(client);
         //var myJson = {
         //    "data": users[0].Utenti
@@ -355,7 +358,7 @@ function filterUsersByID(req, res) {
     });
 }
 
-function associaClientUser(req,res){
+function associaClientUser(req,res) {
     OAuthClient.findOne({
         where: {
             id: req.body.client_Id.id
@@ -367,8 +370,11 @@ function associaClientUser(req,res){
             }
         }).then(users => {
             client.addUtenti(users);
-        })
-    })
+            return res.json({errore: false});
+        }).catch(function () {
+            return res.json({errore: true});
+        });
+    });
 }
 
 //User.findAll({

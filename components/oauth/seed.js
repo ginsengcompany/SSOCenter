@@ -1,6 +1,4 @@
 /**
- * Created by Manjesh on 14-05-2016.
- *
  * Populate DB with sample data on server start
  * to disable, edit config/environment/index.js, and set `seedDB: false`
  */

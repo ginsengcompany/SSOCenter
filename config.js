@@ -1,16 +1,12 @@
-/**
- * Created by Manjesh on 14-05-2016.
- */
-
 module.exports = {
   sql: {
     database: 'SSO',
     username: 'postgres',
-    password: 'postgres',
+    password: 'admin',
     dialect: 'postgres', // PostgreSQL, MySQL, MariaDB, SQLite and MSSQL See more: http://docs.sequelizejs.com/en/latest/
     logging: true,
     timezone: '+02:00',
-    port: '5433'
+    port: '5432'
   },
   mongo: {
     uri: 'mongodb://localhost:27017/SSO'

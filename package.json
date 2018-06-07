@@ -2,16 +2,6 @@
   "name": "node-oauth2-server-implementation",
   "version": "0.0.0",
   "private": true,
-  "contributors": [
-    {
-      "name": "Manjesh V",
-      "email": "manjeshpv@gmail.com"
-    },
-    {
-      "name": "Yogesh",
-      "email": "yogesum@gmail.com"
-    }
-  ],
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.18.3",

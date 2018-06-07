@@ -1,8 +1,3 @@
-/**
- * Created by Manjesh on 14-05-2016.
- */
-
-/** https://github.com/dsquier/oauth2-server-php-mysql **/
 var config = require('./../../../config');
 var Sequelize = require('sequelize');
 

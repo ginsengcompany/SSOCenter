@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var url = require('url');
 var authenticate = require('../components/oauth/authenticate');
 var oauthMongo = require('../components/oauth/mongo-models');
 var oauthSql = require('../components/oauth/models');

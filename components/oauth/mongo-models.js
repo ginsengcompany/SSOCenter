@@ -1,7 +1,3 @@
-/**
- * Created by Manjesh on 14-05-2016.
- */
-
 var _ = require('lodash');
 var mongodb = require('./mongodb');
 var User = mongodb.User;
@@ -280,16 +276,24 @@ function login(req, res) {
 }
 
 function getUsersInformations(req, res) {
-    User.find({}, function (err, users) {
+    User.find({}).populate('OAuthClient').then(users => {
         var myJson = {
             "data": users
         };
-        for (var i = 0; i < myJson.length; i++) {
+        for (var i = 0; i < myJson.data.length; i++) {
             if (myJson.data[i].type.role === 'admin') {
                 myJson.data.splice(i, 1);
             }
+            /*if(myJson.data[i].hasOwnProperty("OAuthClient")){
+                myJson.data[i]["client"] = myJson.data[i]["OAuthClient"];
+                delete data[i]["OAuthClient"]
+            }*/
+            for (var j = 0; j < myJson.data[i].OAuthClient.length; j++) {
+                console.log(myJson.data[i].OAuthClient[j].client_id);
+            }
         }
-        return res.json(myJson);
+        res.output[0] = 9;
+        return res.output[0];
     }).catch(function (err) {
         var myJson = {
             "data": err.message
@@ -307,8 +311,50 @@ function filterUsersByID(req, res) {
             client[0].User.forEach(el => {
                 arrayUtenti.push(el._doc._id);
             });
-            console.log(arrayUtenti);
-        })
+            User.find({
+                _id: {
+                    $nin : arrayUtenti
+                }
+            }).then (utenti => {
+                var myJson = {
+                    "data": utenti
+                };
+                return res.json(myJson);
+            })
+        }).catch(function (err) {
+        var myJson = {
+            "data": err.message
+        };
+        return res.json(myJson);
+    });
+}
+
+function associaClientUser(req,res) {
+    OAuthClient.findOne({
+        _id: req.body.client_Id._id
+    }).then(client => {
+        req.body.userId.forEach(el => {
+            client.User.push(el);
+        });
+        client.save();
+    }).catch(function (err) {
+        var myJson = {
+            "data": err.message
+        };
+        return res.json(myJson);
+    });
+    User.find({
+        _id: req.body.userId
+    }).then(utenti => {
+        console.log(utenti);
+        for (var i = 0; i < utenti.length; i++) {
+            utenti[i].OAuthClient.push(req.body.client_Id._id);
+            utenti[i].save();
+        }
+        return res.json({errore: false});
+    }).catch(function () {
+        return res.json({errore: true});
+    });
 }
 
 function getClientInformations(req, res) {
@@ -325,8 +371,10 @@ function getClientInformations(req, res) {
     });
 }
 
-function deleteUser(req, res) {
-    User.findOneAndRemove({_id: req.body._id}, function (err, user) {
+function deleteUser(id, res) {
+    OAuthClient.updateMany({},{ $pullAll: {User: [id]}}, function (err, user) {
+    });
+    User.findOneAndRemove({_id: id}, function (err, user) {
         if (!err) {
             return res.json({errore: false});
         } else
@@ -335,6 +383,8 @@ function deleteUser(req, res) {
 }
 
 function deleteClient(req, res) {
+    User.updateMany({},{ $pullAll: {OAuthClient: [req.body._id]}}, function (err, user) {
+    });
     OAuthClient.findOneAndRemove({_id: req.body._id}, function (err, user) {
         if (!err) {
             return res.json({errore: false});
@@ -432,34 +482,34 @@ function addNewClient(req, res) {
     arrayGrants = [];
     var arr = 0;
     var dim = 0;
-    if (Array.isArray(req.body.materialGrantTypes)) {
-        dim = req.body.materialGrantTypes.length;
+    if (Array.isArray(req.body.grant_types)) {
+        dim = req.body.grant_types.length;
         for (var i = 0; i < dim; i++) {
-            if (req.body.materialGrantTypes[i] === 'password')
+            if (req.body.grant_types[i] === 'password')
                 arrayGrants[arr] = 'password';
-            if (req.body.materialGrantTypes[i] === 'authorization_code')
+            if (req.body.grant_types[i] === 'authorization_code')
                 arrayGrants[arr] = 'authorization_code';
-            if (req.body.materialGrantTypes[i] === 'refresh_token')
+            if (req.body.grant_types[i] === 'refresh_token')
                 arrayGrants[arr] = 'refresh_token';
-            if (req.body.materialGrantTypes[i] === 'client_credentials')
+            if (req.body.grant_types[i] === 'client_credentials')
                 arrayGrants[arr] = 'client_credentials';
             arr = arr + 1;
         }
     }
     else {
-        arrayGrants[0] = req.body.materialGrantTypes;
+        arrayGrants[0] = req.body.grant_types;
     }
     return OAuthClient.findOne({
-        client_id: req.body.materialFormClientId,
-        client_secret: req.body.materialFormClientSecret,
-        redirect_uri: req.body.materialRedirectUri,
+        client_id: req.body.client_id,
+        client_secret: req.body.client_secret,
+        redirect_uri: req.body.redirect_uri,
         grant_types: arrayGrants
     }).then(function (client) {
         if (!client) {
             OAuthClient.create({
-                client_id: req.body.materialFormClientId,
-                client_secret: req.body.materialFormClientSecret,
-                redirect_uri: req.body.materialRedirectUri,
+                client_id: req.body.client_id,
+                client_secret: req.body.client_secret,
+                redirect_uri: req.body.redirect_uri,
                 grant_types: arrayGrants
             });
             res.redirect(req.headers.referer + '&esito=true');
@@ -499,6 +549,7 @@ module.exports = {
     getClientInformations: getClientInformations,
     updateClient: updateClient,
     deleteClient: deleteClient,
-    filterUsersByID: filterUsersByID
+    filterUsersByID: filterUsersByID,
+    associaClientUser : associaClientUser
 }
 

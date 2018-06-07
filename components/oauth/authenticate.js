@@ -1,7 +1,3 @@
-/**
- * Created by Manjesh on 14-05-2016.
- */
-
 var oauthServer = require('oauth2-server');
 var Request = oauthServer.Request;
 var Response = oauthServer.Response;

@@ -18,11 +18,12 @@ block content
                     p.h4.bq-title Associa Utente a Client
                     p
                         | Associa uno o più Utenti ad un Client col sistema Easy Sign On!
+        .row-m3
+            #myAlert.alert.alert-dismissible
+                a.close(href='#{addClientUrl}') ×
+                strong#testo Inserimento Eseguito con Successo!
         .row
             .container
-                #myAlert.alert.alert-dismissible
-                    a.close(href='#{addClientUrl}') ×
-                    strong#testo Inserimento Eseguito con Successo!
             .col.table-responsive
                 table#tableClient.display.nowrap(cellspacing='0', width='100%')
                     thead
@@ -79,6 +80,7 @@ block javascript
         }
 
         $(document).ready(function () {
+            $("#myAlert").hide();
             tableClient = $('#tableClient').DataTable({
                 ajax: "/getCLient",
                 ajaxSettings: {
@@ -228,65 +230,91 @@ block javascript
             let ids1 = $.map(table.rows('.selected').data(), function (item) {
                 return item;
             });
+            $("#associaUtenti").prop('disabled', true);
             arrayUtenti = ids1;
             datiUtente.client_Id = clientId;
             $.each(arrayUtenti, function (i) {
+                if(arrayUtenti._id === undefined )
                 datiUtente.userId[i] = arrayUtenti[i].id;
+                else
+                datiUtente.userId[i] = arrayUtenti[i]._id;
             });
+            console.log(datiUtente);
             $.ajax({
                 url: '/addClient',
                 type: 'POST',
                 data: JSON.stringify(datiUtente),
                 cache: false,
-                contentType: 'application/json'
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data.errore === false) {
+                        $("#myAlert").show();
+                        $("#myAlert").addClass("alert-success");
+                        table.rows().deselect();
+
+                        tableClient.rows().deselect();
+                        $("#associaUtenti").prop('disabled', true);
+                        $(".close").click(function () {
+                            $("#myAlert").alert("open");
+                        });
+                    }
+                },
+                faliure: function (data) {
+                    if (data.errore === true) {
+                        $("#myAlert").addClass("alert-danger");
+                        $('#associaUtenti').prop('disabled', true);
+                        $("#testo").text('Errore Associazione');
+                        $("#myAlert").alert("open");
+                    }
+                }
             });
-            console.log(datiUtente);
         }
 
-    script.
-        $(document).ready(function () {
-            //$.get("/getUsers", function (data) {
-            //    var arrayUser = data.data;
-            //    console.log(arrayUser);
-            //    var materialUserAddID = document.getElementById('materialUserAdd');
-            //    $.each(arrayUser, function (i) {
-            //        var option = document.createElement("option");
-            //        option.text = arrayUser[i].username;
-            //        option.value = arrayUser[i].id
-            //        materialUserAddID.add(option);
-            //    });
-            //    console.log(materialUserAddID);
-            //});
-            var url_string = window.location.href;
-            var url = new URL(url_string);
-            var c = url.searchParams.get("esito");
-            if (c) {
-                if (c === 'true') {
-                    $("#myAlert").addClass("alert-success");
-                    $('#materialFormClientId').prop('disabled', true);
-                    $('#materialFormClientSecret').prop('disabled', true);
-                    $('#materialRedirectUri').prop('disabled', true);
-                    $('#materialGrantTypes').prop('disabled', true);
-                    $('#btnSubmit').prop('disabled', true);
-                    $(".close").click(function () {
-                        $("#myAlert").alert("open");
-                    });
-                } else {
-                    $("#myAlert").addClass("alert-danger");
-                    $("#testo").text('Errore di inserimento: client già presente!');
-                    $('#materialFormClientId').prop('disabled', false);
-                    $('#materialFormClientSecret').prop('disabled', false);
-                    $('#materialRedirectUri').prop('disabled', false);
-                    $('#materialGrantTypes').prop('disabled', false);
-                    $('#btnSubmit').prop('disabled', false);
-                    $("#myAlert").alert("open");
-                }
-            } else if (c === null) {
-                $('#materialFormClientId').prop('disabled', false);
-                $('#materialFormClientSecret').prop('disabled', false);
-                $('#materialRedirectUri').prop('disabled', false);
-                $('#materialGrantTypes').prop('disabled', false);
-                $('#btnSubmit').prop('disabled', false);
-                $("#myAlert").alert("close");
-            }
-        });
+    //script.
+    //    $(document).ready(function () {
+    //        //$.get("/getUsers", function (data) {
+    //        //    var arrayUser = data.data;
+    //        //    console.log(arrayUser);
+    //        //    var materialUserAddID = document.getElementById('materialUserAdd');
+    //        //    $.each(arrayUser, function (i) {
+    //        //        var option = document.createElement("option");
+    //        //        option.text = arrayUser[i].username;
+    //        //        option.value = arrayUser[i].id
+    //        //        materialUserAddID.add(option);
+    //        //    });
+    //        //    console.log(materialUserAddID);
+    //        //});
+    //        var url_string = window.location.href;
+    //        var url = new URL(url_string);
+    //        var c = url.searchParams.get("esito");
+    //        if (c) {
+    //            if (c === 'true') {
+    //                $("#myAlert").addClass("alert-success");
+    //                $('#materialFormClientId').prop('disabled', true);
+    //                $('#materialFormClientSecret').prop('disabled', true);
+    //                $('#materialRedirectUri').prop('disabled', true);
+    //                $('#materialGrantTypes').prop('disabled', true);
+    //                $('#btnSubmit').prop('disabled', true);
+    //                $(".close").click(function () {
+    //                    $("#myAlert").alert("open");
+    //                });
+    //            } else {
+    //                $("#myAlert").addClass("alert-danger");
+    //                $("#testo").text('Errore di inserimento: client già presente!');
+    //                $('#materialFormClientId').prop('disabled', false);
+    //                $('#materialFormClientSecret').prop('disabled', false);
+    //                $('#materialRedirectUri').prop('disabled', false);
+    //                $('#materialGrantTypes').prop('disabled', false);
+    //                $('#btnSubmit').prop('disabled', false);
+    //                $("#myAlert").alert("open");
+    //            }
+    //        } else if (c === null) {
+    //            $('#materialFormClientId').prop('disabled', false);
+    //            $('#materialFormClientSecret').prop('disabled', false);
+    //            $('#materialRedirectUri').prop('disabled', false);
+    //            $('#materialGrantTypes').prop('disabled', false);
+    //            $('#btnSubmit').prop('disabled', false);
+    //            $("#myAlert").alert("close");
+    //        }
+    //    });
+    //
