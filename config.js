@@ -2,7 +2,7 @@ module.exports = {
   sql: {
     database: 'SSO',
     username: 'postgres',
-    password: 'admin',
+    password: 'postgres',
     dialect: 'postgres', // PostgreSQL, MySQL, MariaDB, SQLite and MSSQL See more: http://docs.sequelizejs.com/en/latest/
     logging: true,
     timezone: '+02:00',

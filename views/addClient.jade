@@ -2,7 +2,6 @@ extends administrationPanel
 
 block title
     title EasySO - SSO - Add User
-        //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
 block style
     link(rel='stylesheet', href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
     link(rel='stylesheet', href='https://cdn.datatables.net/select/1.2.5/css/select.dataTables.min.css')
@@ -137,15 +136,15 @@ block javascript
             $('#example').parents('div.dataTables_wrapper').first().hide();
             $('#example tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
-                if (table.rows( '.selected' ).count()) {
+                if (table.rows('.selected').count()) {
                     $('#associaUtenti').show();
-                    console.log(table.rows( '.selected' ).count());
+                    console.log(table.rows('.selected').count());
                 }
                 else
                     $('#associaUtenti').hide();
             });
 
-            $('#tableClient tbody').on('click','tr', function () {
+            $('#tableClient tbody').on('click', 'tr', function () {
                 clientId = tableClient.row(this).data();
                 $.ajax({
                     url: '/getUsers',
@@ -161,31 +160,6 @@ block javascript
                             table.clear();
                             table.rows.add(data.data);
                             table.draw();
-                            //$('#example').prop('hidden', false);
-                            //table = $('#example').DataTable({
-                            //    columns: [
-                            //        {
-                            //            "data": null,
-                            //            "defaultContent": ""
-                            //        },
-                            //        {"data": "username"}
-                            //    ],
-                            //    responsive: {
-                            //        details: {
-                            //            type: 'column',
-                            //            target: 'tr'
-                            //        }
-                            //    },
-                            //    columnDefs: [{
-                            //        className: 'control',
-                            //        orderable: false,
-                            //        targets: 0
-                            //    }],
-                            //    order: [1, 'asc']
-                            //});
-                            //$('#example tbody').on('click', 'tr', function () {
-                            //    $(this).toggleClass('selected');
-                            //});
                         }
                     },
                     faliure: function (data) {
@@ -193,37 +167,6 @@ block javascript
                 })
             });
         });
-
-        //table = $('#example').DataTable({
-        //    ajax: "/getUsers",
-        //    ajaxSettings: {
-        //        method: "GET",
-        //        cache: false
-        //    },
-        //    columns: [
-        //        {
-        //            "data": null,
-        //            "defaultContent": ""
-        //        },
-        //        {"data": "username"}
-        //    ],
-        //    responsive: {
-        //        details: {
-        //            type: 'column',
-        //            target: 'tr'
-        //        }
-        //    },
-        //    columnDefs: [{
-        //        className: 'control',
-        //        orderable: false,
-        //        targets: 0
-        //    }],
-        //    order: [1, 'asc']
-        //});
-        //$('#example tbody').on('click', 'tr', function () {
-        //    $(this).toggleClass('selected');
-        //});
-
 
     script.
         function associaUtenti() {
@@ -234,10 +177,10 @@ block javascript
             arrayUtenti = ids1;
             datiUtente.client_Id = clientId;
             $.each(arrayUtenti, function (i) {
-                if(arrayUtenti._id === undefined )
-                datiUtente.userId[i] = arrayUtenti[i].id;
+                if (arrayUtenti[i]._id === undefined)
+                    datiUtente.userId[i] = arrayUtenti[i].id;
                 else
-                datiUtente.userId[i] = arrayUtenti[i]._id;
+                    datiUtente.userId[i] = arrayUtenti[i]._id;
             });
             console.log(datiUtente);
             $.ajax({
@@ -269,52 +212,3 @@ block javascript
                 }
             });
         }
-
-    //script.
-    //    $(document).ready(function () {
-    //        //$.get("/getUsers", function (data) {
-    //        //    var arrayUser = data.data;
-    //        //    console.log(arrayUser);
-    //        //    var materialUserAddID = document.getElementById('materialUserAdd');
-    //        //    $.each(arrayUser, function (i) {
-    //        //        var option = document.createElement("option");
-    //        //        option.text = arrayUser[i].username;
-    //        //        option.value = arrayUser[i].id
-    //        //        materialUserAddID.add(option);
-    //        //    });
-    //        //    console.log(materialUserAddID);
-    //        //});
-    //        var url_string = window.location.href;
-    //        var url = new URL(url_string);
-    //        var c = url.searchParams.get("esito");
-    //        if (c) {
-    //            if (c === 'true') {
-    //                $("#myAlert").addClass("alert-success");
-    //                $('#materialFormClientId').prop('disabled', true);
-    //                $('#materialFormClientSecret').prop('disabled', true);
-    //                $('#materialRedirectUri').prop('disabled', true);
-    //                $('#materialGrantTypes').prop('disabled', true);
-    //                $('#btnSubmit').prop('disabled', true);
-    //                $(".close").click(function () {
-    //                    $("#myAlert").alert("open");
-    //                });
-    //            } else {
-    //                $("#myAlert").addClass("alert-danger");
-    //                $("#testo").text('Errore di inserimento: client già presente!');
-    //                $('#materialFormClientId').prop('disabled', false);
-    //                $('#materialFormClientSecret').prop('disabled', false);
-    //                $('#materialRedirectUri').prop('disabled', false);
-    //                $('#materialGrantTypes').prop('disabled', false);
-    //                $('#btnSubmit').prop('disabled', false);
-    //                $("#myAlert").alert("open");
-    //            }
-    //        } else if (c === null) {
-    //            $('#materialFormClientId').prop('disabled', false);
-    //            $('#materialFormClientSecret').prop('disabled', false);
-    //            $('#materialRedirectUri').prop('disabled', false);
-    //            $('#materialGrantTypes').prop('disabled', false);
-    //            $('#btnSubmit').prop('disabled', false);
-    //            $("#myAlert").alert("close");
-    //        }
-    //    });
-    //

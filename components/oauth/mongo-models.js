@@ -292,8 +292,7 @@ function getUsersInformations(req, res) {
                 console.log(myJson.data[i].OAuthClient[j].client_id);
             }
         }
-        res.output[0] = 9;
-        return res.output[0];
+        return res.json(myJson);
     }).catch(function (err) {
         var myJson = {
             "data": err.message
@@ -313,9 +312,9 @@ function filterUsersByID(req, res) {
             });
             User.find({
                 _id: {
-                    $nin : arrayUtenti
+                    $nin: arrayUtenti
                 }
-            }).then (utenti => {
+            }).then(utenti => {
                 var myJson = {
                     "data": utenti
                 };
@@ -329,7 +328,7 @@ function filterUsersByID(req, res) {
     });
 }
 
-function associaClientUser(req,res) {
+function associaClientUser(req, res) {
     OAuthClient.findOne({
         _id: req.body.client_Id._id
     }).then(client => {
@@ -372,7 +371,7 @@ function getClientInformations(req, res) {
 }
 
 function deleteUser(id, res) {
-    OAuthClient.updateMany({},{ $pullAll: {User: [id]}}, function (err, user) {
+    OAuthClient.updateMany({}, {$pullAll: {User: [id]}}, function (err, user) {
     });
     User.findOneAndRemove({_id: id}, function (err, user) {
         if (!err) {
@@ -383,7 +382,9 @@ function deleteUser(id, res) {
 }
 
 function deleteClient(req, res) {
-    User.updateMany({},{ $pullAll: {OAuthClient: [req.body._id]}}, function (err, user) {
+    User.updateMany({}, {
+        $pullAll: {OAuthClient: [req.body._id]}
+    }, function (err, user) {
     });
     OAuthClient.findOneAndRemove({_id: req.body._id}, function (err, user) {
         if (!err) {
@@ -434,7 +435,10 @@ function updateClient(req, res) {
     else {
         arrayGrants[0] = req.body.grant_types;
     }
-    OAuthClient.findOneAndUpdate({_id: req.body._id},
+    OAuthClient.findOneAndUpdate(
+        {
+            _id: req.body._id
+        },
         {
             $set: {
                 client_id: req.body.client_id,
@@ -445,9 +449,11 @@ function updateClient(req, res) {
         }, {new: true}, function (err, doc) {
             if (!err) {
                 return res.json({errore: false});
-            } else
+            } else {
                 return res.json({errore: true});
-        });
+            }
+        }
+    );
 }
 
 function addNewUser(req, res) {
@@ -550,6 +556,6 @@ module.exports = {
     updateClient: updateClient,
     deleteClient: deleteClient,
     filterUsersByID: filterUsersByID,
-    associaClientUser : associaClientUser
+    associaClientUser: associaClientUser
 }
 

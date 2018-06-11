@@ -7,8 +7,7 @@ var configDB = require('../config');
 /* GET home page. */
 router.get('/', function(req, res, next) {
     if(configDB.db === 'mongo') {
-        let r =  oauthMongo.getUsersInformations(req, res);
-       console.log(next);
+        return oauthMongo.getUsersInformations(req, res);
     }
     else return oauthSql.getUsersInformations(req,res);
 });

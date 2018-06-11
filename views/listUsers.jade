@@ -2,7 +2,6 @@ extends administrationPanel
 
 block title
     title EasySO - SSO - List Users
-        //if (gte IE 6)&(lte IE 8) noscript link(rel='stylesheet', href='css/fallback.css')
 block style
     link(rel='stylesheet', href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
     link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css')
@@ -61,18 +60,16 @@ block content
                         button#eliminaUtente.btn.btn-primary.btn-lg(onclick='eliminaUtente();' disabled='true') Elimina Contatto
                 .row.m-3
                     .col.table-responsive
-                        table#example.display.nowrap(cellspacing='0', width='100%')
+                        table#example.display.responsive(cellspacing='0', width='100%')
                             thead
                                 tr
-                                    th
                                     th Username
                                     th Password
                                     th Organizzazione
                                     th Ruolo
-                                    th Client Associati
+                                    th.none Client Associati
                             tfoot
                                 tr
-                                    th
                                     th Username
                                     th Password
                                     th Organizzazione
@@ -96,9 +93,9 @@ block javascript
     // SideNav Initialization
     script.
         $(".button-collapse").sideNav();
+
     // Load Users Table
     script.
-
         var arrayUtenti = {};
 
         datiUtente = {
@@ -120,10 +117,6 @@ block javascript
                     cache: false
                 },
                 columns: [
-                    {
-                        "data": null,
-                        "defaultContent": ""
-                    },
                     {"data": "username"},
                     {"data": "password"},
                     {"data": "type.organization"},
@@ -132,17 +125,7 @@ block javascript
                     //{"data" : "OAuthClient[, ].client_id"}
                     //{"data" : "Client[, ].client_id"}
                 ],
-                responsive: {
-                    details: {
-                        type: 'column',
-                        target: 'tr'
-                    }
-                },
-                columnDefs: [{
-                    className: 'control',
-                    orderable: false,
-                    targets: 0
-                }],
+
                 order: [1, 'asc']
 
             });
@@ -160,23 +143,6 @@ block javascript
                     $('#eliminaUtente').prop('disabled', false);
                 }
             });
-
-            $('#example tbody').on('click', 'td.details-control', function () {
-                let tr = $(this).closest('tr');
-                let row = table.row(tr);
-
-                if (row.child.isShown()) {
-                    // This row is already open - close it
-                    row.child.hide();
-                    tr.removeClass('shown');
-                }
-                else {
-                    // Open this row
-                    row.child(format(row.data())).show();
-                    tr.addClass('shown');
-                }
-            });
-
         });
 
     script.
